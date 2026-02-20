@@ -419,4 +419,35 @@ body.admin-body { background-color: var(--bg-light); color: var(--text-dark); }
     font-size: 0.85rem;
     font-weight: 600;
     text-decoration: underline;
+
+}
+/* --- SOLO PARA CELULARES: 2 PRODUCTOS POR FILA --- */
+@media (max-width: 768px) {
+    .product-grid {
+        display: grid !important;
+        grid-template-columns: repeat(2, 1fr) !important; /* Fuerza las 2 columnas */
+        gap: 12px !important; /* Espacio más chiquito entre fotos */
+        padding: 10px !important;
+        margin: 20px 0 !important;
+    }
+
+    .p-card img {
+        margin-bottom: 8px !important;
+    }
+
+    .p-card h3 {
+        font-size: 0.8rem !important; /* Texto más chico para que no se amontone */
+        line-height: 1.2;
+        height: 32px;
+        overflow: hidden;
+    }
+
+    .p-card .price {
+        font-size: 0.9rem !important;
+    }
+
+    /* Opcional: que el botón de comprar sea un poquito más chico */
+    .btn-buy {
+        font-size: 0.8rem !important;
+    }
 }
