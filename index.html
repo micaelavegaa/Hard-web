@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HARD Repuestos y Lubricantes</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="black-header">
+        <div class="top-bar container">
+            <div class="search-box">
+                <input type="text" id="main-search" placeholder="Buscar repuestos...">
+                <span class="search-icon">🔍</span>
+            </div>
+            <div class="main-logo">
+                <img src="logo-hard.jpg" alt="HARD Logo" class="logo-img">
+            </div>
+            <div class="header-icons">
+                <div class="cart-wrapper" onclick="toggleCartModal()" style="cursor:pointer;">
+                    <span class="icon">👜</span>
+                    <span id="cart-count" class="badge">0</span>
+                </div>
+            </div>
+        </div>
+        <nav class="sub-nav">
+            <ul class="nav-links">
+                <li><a href="#" class="active">Productos</a></li>
+                <li><a href="#" onclick="toggleInfoModal()">Información</a></li> 
+                <li><a href="#" onclick="toggleContactModal()">Contacto</a></li> </ul>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="container main-content">
+        <div id="product-grid" class="product-grid">
+            </div>
+    </main>
+
+    <div id="toast-notification" class="toast">
+        <button class="toast-close" onclick="hideToast()">×</button>
+        <div class="toast-content" id="toast-body">
+            </div>
+    </div>
+
+    <div id="cart-modal" class="modal-overlay sidebar-overlay" style="display: none;">
+        <div class="sidebar-cart">
+            <div class="sidebar-header">
+                <h3>Carrito de compras</h3>
+                <button onclick="toggleCartModal()" class="close-btn-sidebar">×</button>
+            </div>
+            <div id="cart-items-list" class="sidebar-items-container">
+                </div>
+            <div class="sidebar-footer">
+                <div class="summary-row">
+                    <span>Subtotal (sin envío):</span>
+                    <strong id="cart-subtotal">$ 0</strong>
+                </div>
+                <div class="summary-row total-row">
+                    <span>Total:</span>
+                    <strong id="cart-total-price">$ 0</strong>
+                </div>
+                <button id="btn-whatsapp" class="btn-primary-red btn-block">
+                    Iniciar Compra por WhatsApp
+                </button>
+                <a href="#" onclick="toggleCartModal()" class="continue-shopping">Ver más productos</a>
+            </div>
+        </div>
+    </div>
+
+    <div id="info-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box payment-info-box">
+            <div class="modal-header">
+                <h3>Formas de Pago</h3>
+                <button onclick="toggleInfoModal()" class="close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <p class="payment-intro">Podés realizar tu pago en el local por transferencia o billeteras virtuales a cualquiera de las siguientes cuentas:</p>
+                
+                <div class="payment-card">
+                    <h4>🏦 Banco Macro</h4>
+                    <p><strong>Alias:</strong> GRITO.SOJA.INAUDITA</p>
+                    <p><strong>Titular:</strong> Dora Liliana Gonzales</p>
+                </div>
+
+                <div class="payment-card">
+                    <h4>💳 Mercado Pago</h4>
+                    <p><strong>Alias:</strong> MOTO.HARD</p>
+                    <p><strong>Titular:</strong> Vega Miguel</p>
+                </div>
+
+                <div class="payment-card">
+                    <h4>🟠 Naranja X</h4>
+                    <p><strong>Alias:</strong> mvega2020</p>
+                    <p><strong>Titular:</strong> Vega Miguel</p>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button onclick="toggleInfoModal()" class="btn-primary-red">Entendido</button>
+            </div>
+        </div>
+    </div>
+    <div id="contact-modal" class="modal-overlay" style="display: none;">
+        <div class="modal-box contact-box">
+            <div class="modal-header">
+                <h3>Contacto y Ubicación</h3>
+                <button onclick="toggleContactModal()" class="close-btn">×</button>
+            </div>
+            <div class="modal-body">
+                <div class="contact-item">
+                    <span class="contact-icon">📍</span>
+                    <div class="contact-text">
+                        <h4>Dirección</h4>
+                        <p>Av. Cocomarola 8315 - Posadas, Misiones</p>
+                        <a href="https://www.google.com/maps/search/?api=1&query=Av.+Cocomarola+8315+Posadas+Misiones" target="_blank" class="map-link">Ver en Google Maps</a>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <div class="contact-text">
+                        <h4>Teléfono / WhatsApp</h4>
+                        <p>3764326681</p>
+                        <a href="https://wa.me/5493764326681?text=Hola%20HARD!%20Tengo%20una%20consulta" target="_blank" class="chat-link">Chatear ahora</a>
+                    </div>
+                </div>
+
+                <div class="contact-item">
+                    <span class="contact-icon">⏰</span>
+                    <div class="contact-text">
+                        <h4>Horarios</h4>
+                        <p>Lunes a Viernes: 08:00 - 12:00 | 16:00 - 20:00</p>
+                        <p>Sábados: 08:00 - 13:00</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer class="black-footer">
+        <div class="container footer-content">
+            <img src="logo-hard.jpg" alt="HARD Logo" class="footer-logo">
+            <div class="contact-info">
+                <p>3764326681</p>
+                <p>Av. Cocomarola 8315 - Posadas</p>
+            </div>
+        </div>
+    </footer>
+
+    <script type="module" src="app.js"></script>
+</body>
+</html>
