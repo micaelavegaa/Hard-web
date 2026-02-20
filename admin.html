@@ -27,7 +27,21 @@
                     <h1>Panel de Productos</h1>
                     <span class="badge-count" id="total-products">Cargando...</span>
                 </div>
-                <div class="header-actions">
+                
+                <div class="header-actions" style="display: flex; gap: 10px; align-items: center; position: relative;">
+                    <button onclick="toggleConfigMenu()" style="background: #333; color: white; border: none; padding: 10px; border-radius: 6px; cursor: pointer; font-size: 1.2rem;">
+                        ⚙️
+                    </button>
+
+                    <div id="config-menu" style="display: none; position: absolute; top: 55px; right: 0; background: white; border: 1px solid #ddd; padding: 20px; border-radius: 8px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); z-index: 1000; width: 220px;">
+                        <h4 style="margin-bottom: 10px; color: #333; font-size: 0.9rem;">Ajuste de Precios</h4>
+                        <input type="number" id="porcentajeCambio" placeholder="% porcentaje" style="width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px;">
+                        <div style="display: flex; gap: 5px;">
+                            <button onclick="actualizarPreciosMasivo('subir')" style="flex: 1; padding: 8px; font-size: 0.75rem; background: #2E7D32; color: white; border: none; border-radius: 4px; cursor: pointer;">Aumentar</button>
+                            <button onclick="actualizarPreciosMasivo('bajar')" style="flex: 1; padding: 8px; font-size: 0.75rem; background: #D92525; color: white; border: none; border-radius: 4px; cursor: pointer;">Disminuir</button>
+                        </div>
+                    </div>
+
                     <button id="btn-open-modal" class="btn-primary-red">+ Nuevo Producto</button>
                 </div>
             </div>
@@ -70,32 +84,30 @@
                         <input type="text" id="p-name" placeholder="Ej: Kit de Distribución" required>
                     </div>
 
-                    <div class="form-row">
-                        <div class="form-group col-half">
+                    <div style="display: flex; gap: 15px;">
+                        <div class="form-group" style="flex: 1;">
                             <label for="p-price">Precio de venta</label>
-                            <div class="input-group-prefix">
-                                <span>$</span>
-                                <input type="number" id="p-price" step="0.01" placeholder="0.00" required>
+                            <div class="input-group-prefix" style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 6px;">
+                                <span style="padding: 10px; background: #eee;">$</span>
+                                <input type="number" id="p-price" step="0.01" placeholder="0.00" required style="border: none; padding: 10px; flex: 1;">
                             </div>
                         </div>
 
-                        <div class="form-group col-half">
+                        <div class="form-group" style="flex: 1;">
                             <label>Stock</label>
-                            <div class="input-group-prefix" style="display: flex; align-items: center;">
-                                <select id="p-stock-type" onchange="toggleStockInput()" style="border:none; background:none; font-weight:600; padding:0 5px; cursor:pointer;">
+                            <div class="input-group-prefix" style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 6px;">
+                                <select id="p-stock-type" onchange="toggleStockInput()" style="border:none; background:none; padding:10px; font-weight:600; cursor:pointer;">
                                     <option value="numero">Cant.</option>
-                                    <option value="Infinito">∞ Infinito</option>
+                                    <option value="Infinito">∞</option>
                                 </select>
-                                <input type="number" id="p-stock-value" placeholder="0" required style="border:none; flex:1;">
+                                <input type="number" id="p-stock-value" placeholder="0" required style="border:none; padding:10px; flex:1;">
                             </div>
                         </div>
                     </div>
 
                     <div class="form-group">
-                        <label class="file-label">Imagen del producto</label>
-                        <div class="file-input-wrapper">
-                            <input type="file" id="p-image" accept="image/*" required>
-                        </div>
+                        <label>Imagen del producto</label>
+                        <input type="file" id="p-image" accept="image/*" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
                     </div>
 
                     <div class="modal-footer">
