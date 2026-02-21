@@ -32,7 +32,7 @@
     grid-template-columns: repeat(4, 1fr); /* Fuerza 4 columnas en PC */
     gap: 25px; 
     margin: 40px auto; 
-    max-width: 1100px; /* ESTO genera el margen lateral para que se vea "lejos" */
+    max-width: 1000px; /* ESTO genera el margen lateral para que se vea "lejos" */
     padding: 0 20px;
 }
 
@@ -471,4 +471,5 @@ body.admin-body { background-color: var(--bg-light); color: var(--text-dark); }
     font-weight: 600;
     text-decoration: underline;
 }
+
 
