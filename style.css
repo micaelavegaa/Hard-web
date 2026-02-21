@@ -1,130 +1,89 @@
-/* --- VARIABLES Y RESET --- */
+/* --- VARIABLES --- */
 :root {
     --primary-red: #D92525;
     --primary-dark: #1A1A1A;
     --text-dark: #333333;
     --text-light: #7E8A96;
     --bg-light: #F4F6F8;
-    --border-color: #E1E5EB;
     --white: #ffffff;
-    --black: #000000;
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Montserrat', sans-serif; }
 
-body { background-color: var(--white); color: var(--text-dark); }
+body { background-color: var(--white); color: var(--text-dark); overflow-x: hidden; }
 .container { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-/* --- HEADER (ESTILO TIENDANUBE / MORELIA) --- */
-.black-header { 
-    background: #000 !important; 
-    color: #fff !important; 
-    padding: 15px 0 0 0; 
-    position: sticky; 
-    top: 0; 
-    z-index: 1000; 
-}
-.top-bar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 20px; }
+/* --- HEADER TIENDANUBE (Logo centrado) --- */
+.black-header { background: #000 !important; color: #fff !important; padding: 15px 0 0 0; position: sticky; top: 0; z-index: 1000; }
+.top-bar { display: flex; justify-content: space-between; align-items: center; padding-bottom: 15px; }
+.search-box { flex: 1; display: flex; }
+.search-box input { background: transparent; border: 1px solid #444; color: white; padding: 8px; border-radius: 4px; width: 180px; }
+.main-logo { flex: 1; text-align: center; } /* Logo al centro */
+.logo-img { height: 45px; object-fit: contain; }
+.header-icons { flex: 1; text-align: right; font-size: 1.2rem; }
 
-.search-box { flex: 1; position: relative; }
-.search-box input { background: transparent; border: 1px solid #444; color: white; padding: 8px 12px; border-radius: 4px; width: 220px; }
+.sub-nav { border-top: 1px solid #333; padding: 12px 0; }
+.nav-links { display: flex; justify-content: center; list-style: none; gap: 25px; }
+.nav-links a { color: white; text-decoration: none; font-size: 0.85rem; text-transform: uppercase; }
 
-/* LOGO CENTRADO POSTA */
-.main-logo { flex: 1; text-align: center; }
-.logo-img { height: 50px; }
-
-.header-icons { flex: 1; text-align: right; display: flex; justify-content: flex-end; gap: 20px; font-size: 1.2rem; }
-
-.sub-nav { border-top: 1px solid #333; padding: 15px 0; }
-.nav-links { display: flex; justify-content: center; list-style: none; gap: 30px; }
-.nav-links a { color: white; text-decoration: none; font-weight: 400; font-size: 0.9rem; }
-.nav-links a.active { border-bottom: 2px solid var(--primary-red); padding-bottom: 5px; }
-
-/* --- GRILLA DE PRODUCTOS (4 COLUMNAS PC + MÁRGENES) --- */
+/* --- GRILLA PRODUCTOS (ESTILO MORELIA: 4 COLUMNAS) --- */
 .product-grid { 
     display: grid; 
-    grid-template-columns: repeat(4, 1fr); /* 4 productos por fila */
+    grid-template-columns: repeat(4, 1fr); /* 4 productos en PC */
     gap: 30px; 
-    margin: 50px auto; 
-    max-width: 1140px; /* Margen lateral estilo Morelia */
+    margin: 40px auto; 
+    max-width: 1100px; /* Margen lateral posta para que no sea enorme */
     padding: 0 20px;
 }
 
+.p-card { text-align: center; }
+.p-card img { width: 100%; aspect-ratio: 1; object-fit: contain; margin-bottom: 15px; background: #fdfdfd; }
+.p-card h3 { font-size: 0.9rem; font-weight: 400; color: #555; margin-bottom: 5px; height: 35px; overflow: hidden; }
+.p-card .price { font-size: 1rem; font-weight: 700; color: #000; margin-bottom: 10px; display: block; }
+.btn-buy { color: #000; text-decoration: underline; font-weight: 600; background: none; border: none; cursor: pointer; font-size: 0.8rem; }
 
-
-.p-card { text-align: center; padding: 10px; transition: transform 0.2s; }
-.p-card:hover { transform: translateY(-5px); }
-.p-card img { width: 100%; aspect-ratio: 1; object-fit: contain; margin-bottom: 15px; background: #f9f9f9; border-radius: 4px; }
-.p-card h3 { font-size: 0.9rem; font-weight: 400; color: #666; margin-bottom: 8px; height: 35px; overflow: hidden; }
-.p-card .price { font-size: 1rem; font-weight: 700; margin-bottom: 12px; display: block; }
-.btn-buy { color: var(--black); text-decoration: underline; font-weight: 600; background: none; border: none; cursor: pointer; font-size: 0.85rem; }
-
-/* --- FOOTER --- */
-.black-footer { background: #000 !important; color: white !important; padding: 60px 0; text-align: center; margin-top: 100px; }
-.footer-logo { height: 60px; margin-bottom: 30px; }
-.social-links { margin-bottom: 25px; font-size: 1.5rem; display: flex; justify-content: center; gap: 20px; }
-.contact-info p { font-size: 0.9rem; margin-bottom: 8px; letter-spacing: 1px; }
-
-/* --- PANEL ADMINISTRADOR (BOTONES Y TABLA ARREGLADA) --- */
+/* --- ADMIN DASHBOARD (AISLADO) --- */
 .admin-body { background-color: #f0f2f5 !important; }
-.admin-header { background: var(--primary-dark); color: white; padding: 20px 0; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-.badge-count { background: rgba(255,255,255,0.15); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; }
+.admin-header { background: #1A1A1A; color: #fff; padding: 15px 0; }
+.header-flex { display: flex; justify-content: space-between; align-items: center; }
 
-/* TUS BOTONES ORIGINALES */
-.btn-primary-red {
-    background-color: var(--primary-red) !important;
-    color: var(--white) !important;
-    border: none; padding: 12px 24px; border-radius: 6px; font-weight: 600; cursor: pointer;
-    box-shadow: 0 4px 6px rgba(217, 37, 37, 0.2);
-}
-.btn-primary-blue { background: #007bff !important; color: white !important; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; }
+/* Botones Admin */
+.btn-primary-red { background: var(--primary-red) !important; color: #fff !important; border: none; padding: 10px 20px; border-radius: 4px; font-weight: 600; cursor: pointer; }
+.btn-primary-blue { background: #007bff !important; color: #fff !important; border: none; padding: 10px 20px; border-radius: 4px; font-weight: 600; cursor: pointer; }
 
-/* Tabla que permite scroll horizontal en celu para ver Acciones */
-.table-card { background: white; border: 1px solid var(--border-color); border-radius: 8px; overflow-x: auto; margin-bottom: 50px; }
-.product-table { width: 100%; border-collapse: collapse; min-width: 600px; } /* Mínimo 600px para que no se amontone */
-.product-table th { background: #f8f9fa; text-align: left; padding: 15px 20px; color: #666; font-size: 0.8rem; text-transform: uppercase; border-bottom: 2px solid var(--border-color); }
-.product-table td { padding: 15px 20px; border-bottom: 1px solid #eee; vertical-align: middle; }
+/* Tabla Admin: Evita que se encime */
+.table-card { background: #fff; border-radius: 8px; border: 1px solid #ddd; margin: 20px 0; overflow-x: auto; } /* Scroll para que no se pise */
+.product-table { width: 100%; border-collapse: collapse; min-width: 700px; }
+.product-table th { background: #f8f9fa; padding: 12px; text-align: left; font-size: 0.75rem; text-transform: uppercase; color: #777; border-bottom: 2px solid #eee; }
+.product-table td { padding: 12px; border-bottom: 1px solid #eee; vertical-align: middle; }
 
-.thumb-admin { width: 45px; height: 45px; border-radius: 4px; object-fit: cover; border: 1px solid #eee; margin-right: 15px; }
-.btn-del { background: none; border: none; cursor: pointer; font-size: 1.2rem; padding: 10px; border-radius: 4px; }
-.btn-del:hover { background: #fee2e2; }
-
-/* --- MODAL VERTICAL --- */
+/* --- MODALES --- */
 .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: none; align-items: center; justify-content: center; z-index: 2000; }
-.modal-box { background: var(--white); width: 400px; border-radius: 10px; overflow: hidden; animation: modalUp 0.3s ease-out; }
-.modal-header { padding: 20px; border-bottom: 1px solid #eee; display: flex; justify-content: space-between; align-items: center; }
-.modal-form { padding: 25px; display: flex; flex-direction: column; gap: 15px; }
-
+.modal-box { background: #fff; width: 360px; border-radius: 8px; overflow: hidden; padding: 20px; }
+.modal-form { display: flex; flex-direction: column; gap: 15px; }
 .form-group { display: flex; flex-direction: column; gap: 5px; }
-.form-group label { font-weight: 600; font-size: 0.9rem; color: var(--text-dark); }
-.form-group input[type="text"], .form-group input[type="number"], .input-group-prefix { width: 100%; border: 1px solid var(--border-color); border-radius: 6px; overflow: hidden; }
-.form-group input { padding: 12px; }
+.form-group label { font-size: 0.8rem; font-weight: 600; color: #444; }
+.form-group input { padding: 10px; border: 1px solid #ddd; border-radius: 4px; }
+.input-group-prefix { display: flex; align-items: center; border: 1px solid #ddd; border-radius: 4px; }
+.input-group-prefix span { background: #eee; padding: 10px; border-right: 1px solid #ddd; }
+.input-group-prefix input { border: none; flex: 1; padding: 10px; outline: none; }
 
-.input-group-prefix { display: flex; align-items: center; }
-.input-group-prefix span { background: var(--bg-light); padding: 12px 15px; border-right: 1px solid var(--border-color); }
-.input-group-prefix input { border: none; padding: 12px; flex: 1; outline: none; }
+/* --- CONTACTO Y PAGOS --- */
+.payment-card { background: #f9f9f9; padding: 15px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid var(--primary-red); }
+.contact-item { display: flex; gap: 15px; margin-bottom: 20px; align-items: flex-start; }
+.contact-icon { font-size: 1.4rem; background: #eee; padding: 8px; border-radius: 50%; }
 
-.modal-footer { padding: 20px; background: var(--bg-light); display: flex; justify-content: flex-end; gap: 15px; }
-
-/* --- EXTRAS: CARRITO, TOAST Y PAGOS (Tus estilos originales) --- */
-.toast { position: fixed; top: 80px; right: 20px; background: #fff; padding: 15px; border-radius: 4px; box-shadow: 0 4px 12px rgba(0,0,0,0.15); z-index: 3000; width: 320px; display: none; }
-.sidebar-cart { background: #fff; width: 100%; max-width: 450px; height: 100%; display: flex; flex-direction: column; position: fixed; right: 0; top: 0; z-index: 4000; box-shadow: -5px 0 15px rgba(0,0,0,0.1); }
-.payment-card { background: #f8f8f8; padding: 15px; border-radius: 8px; margin-bottom: 12px; border-left: 4px solid var(--primary-red); }
-.contact-item { display: flex; gap: 15px; margin-bottom: 25px; align-items: flex-start; }
-
-/* --- RESPONSIVE: CELULAR (2 PRODUCTOS Y TABLA SCROLLABLE) --- */
+/* --- RESPONSIVE CELULAR (2 PRODUCTOS) --- */
 @media (max-width: 768px) {
+    .top-bar { flex-direction: column; gap: 15px; text-align: center; }
+    .search-box { order: 2; }
+    .main-logo { order: 1; }
+    .header-icons { order: 3; }
+    
     .product-grid { 
         grid-template-columns: repeat(2, 1fr) !important; /* Vuelven los 2 productos */
         gap: 15px !important; 
         padding: 10px; 
     }
-    .p-card h3 { font-size: 0.8rem; height: 35px; }
-    .modal-box { width: 92%; }
-    .top-bar { flex-direction: column; text-align: center; gap: 15px; }
-    .nav-links { gap: 15px; font-size: 0.8rem; overflow-x: auto; white-space: nowrap; justify-content: flex-start; padding: 10px; }
-    
-    /* Arreglo admin celular: permite mover la tabla para ver borrar/acciones */
-    .table-card { padding: 0; }
+    .p-card h3 { font-size: 0.75rem; height: 30px; }
 }
-
