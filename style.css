@@ -33,7 +33,7 @@
     grid-template-columns: repeat(4, 1fr); 
     gap: 30px; 
     margin: 50px auto; 
-    max-width: 1140px; /* Esto crea el "margen" lateral que buscás */
+    max-width: 2000px; /* Esto crea el "margen" lateral que buscás */
     padding: 0 10px;
 }
 
@@ -486,4 +486,5 @@ body.admin-body { background-color: var(--bg-light); color: var(--text-dark); }
     font-weight: 600;
     text-decoration: underline;
 }
+
 
