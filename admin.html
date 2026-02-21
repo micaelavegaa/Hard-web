@@ -3,22 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Administrador HARD</title>
-    <link rel="icon" type="image/png" href="logo.png">
+    <title>Panel Admin - HARD Repuestos</title>
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
 </head>
 <body class="admin-body">
 
-    <div id="admin-login-overlay" class="modal-overlay" style="display: flex; background: #000; z-index: 9999;">
-        <div class="modal-box" style="max-width: 350px; text-align: center; padding: 30px;">
-            <h3 style="margin-bottom: 10px;">Acceso HARD</h3>
-            <p style="font-size: 0.85rem; color: #666; margin-bottom: 20px;">Ingresá la clave de administrador.</p>
-            <input type="password" id="admin-password-input" placeholder="Contraseña" 
-                   style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; margin-bottom: 20px; text-align: center;">
-            <button onclick="verificarAcceso()" class="btn-primary-red" style="width: 100%;">Entrar</button>
+    <div id="admin-login-overlay" class="modal-overlay" style="display: flex;">
+        <div class="modal-box" style="width: 320px; text-align: center;">
+            <div class="modal-form">
+                <h3>Acceso Administrativo</h3>
+                <input type="password" id="admin-password-input" placeholder="Clave Maestra">
+                <button id="btn-login-submit" class="btn-primary-red" style="width: 100%; margin-top: 10px;">Entrar</button>
+            </div>
         </div>
     </div>
 
@@ -56,84 +54,75 @@
                     <input type="text" id="admin-search" placeholder="Buscar por nombre...">
                 </div>
             </div>
-
-            <div class="table-card">
-                <div class="table-responsive">
-                    <table class="product-table">
-                        <thead>
-                            <tr>
-                                <th>Producto</th>
-                                <th class="text-center">Stock</th>
-                                <th>Precio</th>
-                                <th class="text-right">Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody id="admin-tbody"></tbody>
-                    </table>
-                </div>
+            <div class="table-card" style="overflow-x: auto;">
+                <table class="product-table">
+                    <thead>
+                        <tr>
+                            <th>Producto</th>
+                            <th>Stock</th>
+                            <th>Precio</th>
+                            <th style="text-align: right;">Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="admin-tbody">
+                        </tbody>
+                </table>
             </div>
         </main>
+    </div>
 
-        <div id="modal-container" class="modal-overlay">
-            <div class="modal-box">
-                <div class="modal-header">
-                    <h3>Agregar Nuevo Producto</h3>
-                    <button id="btn-close-modal" class="close-btn">×</button>
-                </div>
-                <form id="admin-form" class="modal-form">
-                    <div class="form-group">
-                        <label for="p-name">Nombre del repuesto</label>
-                        <input type="text" id="p-name" placeholder="Ej: Kit de Distribución" required>
-                    </div>
-
-                    <div style="display: flex; gap: 15px;">
-                        <div class="form-group" style="flex: 1;">
-                            <label for="p-price">Precio de venta</label>
-                            <div class="input-group-prefix" style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 6px;">
-                                <span style="padding: 10px; background: #eee;">$</span>
-                                <input type="number" id="p-price" step="0.01" placeholder="0.00" required style="border: none; padding: 10px; flex: 1;">
-                            </div>
-                        </div>
-
-                        <div class="form-group" style="flex: 1;">
-                            <label>Stock</label>
-                            <div class="input-group-prefix" style="display: flex; align-items: center; border: 1px solid #ccc; border-radius: 6px;">
-                                <select id="p-stock-type" onchange="toggleStockInput()" style="border:none; background:none; padding:10px; font-weight:600; cursor:pointer;">
-                                    <option value="numero">Cant.</option>
-                                    <option value="Infinito">∞</option>
-                                </select>
-                                <input type="number" id="p-stock-value" placeholder="0" required style="border:none; padding:10px; flex:1;">
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label>Imagen del producto</label>
-                        <input type="file" id="p-image" accept="image/*" required style="width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px;">
-                    </div>
-
-                    <div class="modal-footer">
-                        <button type="button" id="btn-cancel" class="btn-text">Cancelar</button>
-                        <button type="submit" id="btn-save" class="btn-primary-red">Guardar Producto</button>
-                    </div>
-                </form>
+    <div id="modal-container" class="modal-overlay">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3 id="modal-title">Nuevo Producto</h3>
+                <button id="btn-close-modal" class="close-btn">&times;</button>
             </div>
+            <form id="admin-form" class="modal-form">
+                <div class="form-group">
+                    <label>Nombre del Repuesto</label>
+                    <input type="text" id="p-name" required placeholder="nombre del producto">
+                </div>
+                <div class="form-group">
+                    <label>Precio</label>
+                    <div class="input-group-prefix">
+                        <span>$</span>
+                        <input type="number" id="p-price" placeholder="0.00" step="0.01" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Stock</label>
+                    <select id="p-stock-type" style="padding: 6px; border-radius: 4px; border: 1px solid #ddd;">
+                        <option value="Manual">Manual</option>
+                        <option value="Infinito">Infinito (∞)</option>
+                    </select>
+                    <input type="number" id="p-stock-value" placeholder="Cantidad" style="width: 100%; padding: 10px; border-radius: 4px; border: 1px solid #ddd;">
+                </div>
+                <div class="form-group">
+                    <label>Imagen</label>
+                    <input type="file" id="p-image" accept="image/*">
+                    <small id="img-status" style="color: #888; display: block; margin-top: 5px;"></small>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" id="btn-cancel" class="btn-text">Cancelar</button>
+                    <button type="submit" id="btn-save" class="btn-primary-red">Guardar Producto</button>
+                </div>
+            </form>
         </div>
     </div>
-    <div id="cropper-container" class="modal-overlay" style="z-index: 3000;">
-        <div class="modal-box" style="max-width: 90%; width: 500px;">
-            <div class="modal-header">
-                <h3>Recortar Imagen</h3>
-            </div>
-            <div style="padding: 20px; max-height: 400px; overflow: hidden;">
+
+    <div id="cropper-container" class="modal-overlay" style="z-index: 6000;">
+        <div class="modal-box" style="width: 400px;">
+            <div style="height: 300px; background: #000; overflow: hidden;">
                 <img id="image-to-crop" style="max-width: 100%;">
             </div>
             <div class="modal-footer">
-                <button type="button" onclick="cancelarRecorte()" class="btn-text">Cancelar</button>
-                <button type="button" onclick="finalizarRecorte()" class="btn-primary-red">Cortar y Usar</button>
+                <button id="btn-crop-cancel" class="btn-text">Cancelar</button>
+                <button id="btn-crop-done" class="btn-primary-red">Recortar</button>
             </div>
         </div>
     </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <script type="module" src="admin.js"></script>
 </body>
 </html>
