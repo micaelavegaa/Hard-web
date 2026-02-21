@@ -139,11 +139,11 @@ window.actualizarPreciosMasivo = async (accion) => {
     const porcentaje = parseFloat(inputPorcentaje.value);
     
     if (isNaN(porcentaje) || porcentaje <= 0) {
-        alert("Miki, ingresá un número mayor a 0.");
+        alert("Ingresá un número mayor a 0.");
         return;
     }
 
-    const confirmar = confirm(`¿Estás segura de querer ${accion === 'subir' ? 'AUMENTAR' : 'BAJAR'} todos los precios un ${porcentaje}%?`);
+    const confirmar = confirm(`¿Estás seguro de querer ${accion === 'subir' ? 'AUMENTAR' : 'BAJAR'} todos los precios un ${porcentaje}%?`);
     if (!confirmar) return;
 
     try {
@@ -172,3 +172,4 @@ window.actualizarPreciosMasivo = async (accion) => {
         console.error(error);
     }
 };
+
