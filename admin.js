@@ -14,30 +14,178 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 const API_KEY_IMGBB = "53b1440dc07ac33983ca315f13a661e9";
 
-const CLAVE_MAESTRA = "alanmiguel2020";
+// Estados globales
+let editId = null;
+let cropper = null;
+let croppedBlob = null;
 
-// --- VARIABLES GLOBALES PARA RECORTE ---
-let cropper;
-let croppedBlob = null; 
+// Referencias constantes
+const adminForm = document.getElementById('admin-form');
+const modalContainer = document.getElementById('modal-container');
+const tbody = document.getElementById('admin-tbody');
 
-// --- SEGURIDAD: CONTROL DE ACCESO ---
-window.verificarAcceso = () => {
+// --- SEGURIDAD: LOGIN ---
+document.getElementById('btn-login-submit').addEventListener('click', () => {
     const pass = document.getElementById('admin-password-input').value;
-    if (pass === CLAVE_MAESTRA) {
+    if (pass === "alanmiguel2020") {
         sessionStorage.setItem('admin_auth', 'true');
-        document.getElementById('admin-login-overlay').style.display = 'none';
-        document.getElementById('admin-protected-content').style.display = 'block';
-    } else {
-        alert("Clave incorrecta.");
-    }
+        location.reload();
+    } else { alert("Clave incorrecta."); }
+});
+
+if (sessionStorage.getItem('admin_auth') === 'true') {
+    document.getElementById('admin-login-overlay').style.display = 'none';
+    document.getElementById('admin-protected-content').style.display = 'block';
+}
+
+// --- MANEJO DE MODAL ---
+const cerrarModal = () => {
+    modalContainer.style.display = 'none';
+    adminForm.reset();
+    editId = null;
+    croppedBlob = null;
 };
 
-document.addEventListener('DOMContentLoaded', () => {
-    if (sessionStorage.getItem('admin_auth') === 'true') {
-        document.getElementById('admin-login-overlay').style.display = 'none';
-        document.getElementById('admin-protected-content').style.display = 'block';
+document.getElementById('btn-open-modal').addEventListener('click', () => {
+    editId = null;
+    adminForm.reset();
+    document.getElementById('modal-title').innerText = "Nuevo Producto";
+    document.getElementById('img-status').innerText = "La imagen es obligatoria.";
+    modalContainer.style.display = 'flex';
+});
+
+document.getElementById('btn-close-modal').addEventListener('click', cerrarModal);
+document.getElementById('btn-cancel').addEventListener('click', cerrarModal);
+
+// --- STOCK TOGGLE ---
+document.getElementById('p-stock-type').addEventListener('change', (e) => {
+    const isInf = e.target.value === "Infinito";
+    const valInput = document.getElementById('p-stock-value');
+    valInput.style.visibility = isInf ? "hidden" : "visible";
+    valInput.required = !isInf;
+});
+
+// --- LISTADO Y ACCIONES (DELEGACIÓN) ---
+onSnapshot(collection(db, "productos"), (snap) => {
+    tbody.innerHTML = "";
+    document.getElementById('total-products').innerText = `${snap.size} productos`;
+    snap.forEach(d => {
+        const p = d.data();
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td><div class="table-prod-info"><img src="${p.imagen}" class="thumb-admin"><strong>${p.nombre}</strong></div></td>
+            <td><span class="stock-tag">${p.stock}</span></td>
+            <td>$ ${parseFloat(p.precio).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
+            <td style="text-align: right;">
+                <button class="btn-edit-item" data-id="${d.id}" data-nombre="${p.nombre}" data-precio="${p.precio}" data-stock="${p.stock}" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">✏️</button>
+                <button class="btn-del" data-id="${d.id}" style="margin-left:10px; background:none; border:none; cursor:pointer;">🗑️</button>
+            </td>
+        `;
+        tbody.appendChild(tr);
+    });
+});
+
+tbody.addEventListener('click', (e) => {
+    const btnEdit = e.target.closest('.btn-edit-item');
+    const btnDel = e.target.closest('.btn-del');
+
+    if (btnEdit) {
+        const d = btnEdit.dataset;
+        editId = d.id;
+        document.getElementById('p-name').value = d.nombre;
+        document.getElementById('p-price').value = d.precio;
+        const isInf = d.stock === "∞";
+        document.getElementById('p-stock-type').value = isInf ? "Infinito" : "Manual";
+        const valInput = document.getElementById('p-stock-value');
+        valInput.value = isInf ? "" : d.stock;
+        valInput.style.visibility = isInf ? "hidden" : "visible";
+        document.getElementById('modal-title').innerText = "Editar Producto";
+        document.getElementById('img-status').innerText = "Opcional (deja vacío para mantener la actual).";
+        modalContainer.style.display = 'flex';
+    }
+
+    if (btnDel) {
+        if (confirm("¿Borrar repuesto?")) deleteDoc(doc(db, "productos", btnDel.dataset.id));
     }
 });
+
+// --- LÓGICA CROPPER ---
+document.getElementById('p-image').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (file) {
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+            document.getElementById('cropper-container').style.display = 'flex';
+            const img = document.getElementById('image-to-crop');
+            img.src = ev.target.result;
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(img, { aspectRatio: 1, viewMode: 1 });
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+document.getElementById('btn-crop-done').addEventListener('click', () => {
+    cropper.getCroppedCanvas({ width: 600, height: 600 }).toBlob((blob) => {
+        croppedBlob = blob;
+        document.getElementById('cropper-container').style.display = 'none';
+        alert("Imagen procesada.");
+    }, 'image/jpeg');
+});
+
+document.getElementById('btn-crop-cancel').addEventListener('click', () => {
+    document.getElementById('cropper-container').style.display = 'none';
+    document.getElementById('p-image').value = "";
+});
+
+// --- GUARDAR / ACTUALIZAR ---
+adminForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const btn = document.getElementById('btn-save');
+    btn.innerText = "Procesando...";
+    btn.disabled = true;
+
+    try {
+        let imageUrl = null;
+        if (croppedBlob) {
+            const fd = new FormData();
+            fd.append("image", croppedBlob, "p.jpg");
+            const res = await fetch(`https://api.imgbb.com/1/upload?key=${API_KEY_IMGBB}`, { method: "POST", body: fd });
+            const json = await res.json();
+            imageUrl = json.data.url;
+        }
+
+        const type = document.getElementById('p-stock-type').value;
+        const val = document.getElementById('p-stock-value').value;
+        const data = {
+            nombre: document.getElementById('p-name').value,
+            precio: parseFloat(document.getElementById('p-price').value),
+            stock: type === "Infinito" ? "∞" : val
+        };
+
+        if (imageUrl) data.imagen = imageUrl;
+
+        if (editId) {
+            await updateDoc(doc(db, "productos", editId), data);
+            alert("Actualizado!");
+        } else {
+            if (!imageUrl) throw new Error("Falta la imagen");
+            await addDoc(collection(db, "productos"), data);
+            alert("Guardado!");
+        }
+        cerrarModal();
+    } catch (err) { alert(err.message); }
+    finally { btn.innerText = "Guardar Producto"; btn.disabled = false; }
+});
+
+// --- BUSCADOR ---
+document.getElementById('admin-search').addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    tbody.querySelectorAll('tr').forEach(tr => {
+        tr.style.display = tr.innerText.toLowerCase().includes(term) ? '' : 'none';
+    });
+});
+
 
 // --- MENÚ CONFIGURACIÓN ---
 window.toggleConfigMenu = () => {
@@ -52,138 +200,6 @@ document.addEventListener('click', (e) => {
         menu.style.display = 'none';
     }
 });
-
-// --- BUSCADOR ---
-document.getElementById('admin-search').addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    const rows = document.querySelectorAll('#admin-tbody tr');
-    rows.forEach(row => {
-        const name = row.querySelector('td').innerText.toLowerCase();
-        row.style.display = name.includes(term) ? '' : 'none';
-    });
-});
-
-// --- LÓGICA STOCK ---
-window.toggleStockInput = () => {
-    const type = document.getElementById('p-stock-type').value;
-    const input = document.getElementById('p-stock-value');
-    if (type === "Infinito") {
-        input.style.visibility = "hidden";
-        input.required = false;
-        input.value = "";
-    } else {
-        input.style.visibility = "visible";
-        input.required = true;
-    }
-};
-
-// --- MODAL PRINCIPAL ---
-document.getElementById('btn-open-modal').onclick = () => document.getElementById('modal-container').style.display = 'flex';
-const cerrar = () => {
-    document.getElementById('modal-container').style.display = 'none';
-    croppedBlob = null; // Limpiamos la imagen al cerrar
-};
-document.getElementById('btn-close-modal').onclick = cerrar;
-document.getElementById('btn-cancel').onclick = cerrar;
-
-// --- LÓGICA DE RECORTE (CROPPER) ---
-document.getElementById('p-image').addEventListener('change', function(e) {
-    if (e.target.files && e.target.files.length > 0) {
-        const reader = new FileReader();
-        reader.onload = function(event) {
-            document.getElementById('cropper-container').style.display = 'flex';
-            const img = document.getElementById('image-to-crop');
-            img.src = event.target.result;
-
-            if (cropper) cropper.destroy();
-            cropper = new Cropper(img, {
-                aspectRatio: 1, // Cuadrado perfecto
-                viewMode: 1,
-                autoCropArea: 1
-            });
-        };
-        reader.readAsDataURL(e.target.files[0]);
-    }
-});
-
-window.cancelarRecorte = () => {
-    document.getElementById('cropper-container').style.display = 'none';
-    document.getElementById('p-image').value = "";
-};
-
-window.finalizarRecorte = () => {
-    const canvas = cropper.getCroppedCanvas({ width: 600, height: 600 });
-    canvas.toBlob((blob) => {
-        croppedBlob = blob;
-        document.getElementById('cropper-container').style.display = 'none';
-        alert("¡Imagen lista!");
-    }, 'image/jpeg');
-};
-
-// --- LISTADO REAL-TIME ---
-onSnapshot(collection(db, "productos"), (snap) => {
-    const tbody = document.getElementById('admin-tbody');
-    tbody.innerHTML = "";
-    document.getElementById('total-products').innerText = `${snap.size} productos`;
-    snap.forEach(d => {
-        const p = d.data();
-        tbody.innerHTML += `
-            <tr>
-                <td><div style="display:flex;align-items:center;gap:10px;"><img src="${p.imagen}" style="width:40px;height:40px;object-fit:cover;border-radius:4px;"><strong>${p.nombre}</strong></div></td>
-                <td class="text-center"><span style="color:#2E7D32;font-weight:600;">${p.stock}</span></td>
-                <td>$ ${parseFloat(p.precio).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
-                <td class="text-right"><button onclick="borrar('${d.id}')" class="btn-del">🗑️</button></td>
-            </tr>`;
-    });
-});
-
-// --- GUARDAR PRODUCTO (CON IMAGEN RECORTADA) ---
-document.getElementById('admin-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    
-    if (!croppedBlob) {
-        alert("Miki, por favor selecciona y recorta la imagen antes de guardar.");
-        return;
-    }
-
-    const btn = document.getElementById('btn-save');
-    btn.innerText = "Subiendo...";
-    btn.disabled = true;
-
-    try {
-        const formData = new FormData();
-        // Usamos el BLOB recortado en lugar del archivo original
-        formData.append("image", croppedBlob, "producto.jpg");
-        
-        const resp = await fetch(`https://api.imgbb.com/1/upload?key=${API_KEY_IMGBB}`, { method: "POST", body: formData });
-        const resData = await resp.json();
-        
-        const type = document.getElementById('p-stock-type').value;
-        const val = document.getElementById('p-stock-value').value;
-
-        await addDoc(collection(db, "productos"), {
-            nombre: document.getElementById('p-name').value,
-            precio: parseFloat(document.getElementById('p-price').value),
-            stock: type === "Infinito" ? "∞" : val,
-            imagen: resData.data.url,
-            fecha: new Date()
-        });
-
-        alert("¡Guardado exitoso!");
-        cerrar();
-        e.target.reset();
-        croppedBlob = null; 
-    } catch (err) { 
-        alert("Error al subir."); 
-        console.error(err);
-    } finally { 
-        btn.innerText = "Guardar Producto"; 
-        btn.disabled = false; 
-    }
-});
-
-// --- BORRAR ---
-window.borrar = (id) => { if(confirm("¿Eliminar?")) deleteDoc(doc(db, "productos", id)); };
 
 // --- ACTUALIZACIÓN MASIVA ---
 window.actualizarPreciosMasivo = async (accion) => {
@@ -217,3 +233,6 @@ window.actualizarPreciosMasivo = async (accion) => {
         console.error(error);
     }
 };
+
+document.getElementById('btn-mass-up').addEventListener('click', () => massChange('up'));
+document.getElementById('btn-mass-down').addEventListener('click', () => massChange('down'));
