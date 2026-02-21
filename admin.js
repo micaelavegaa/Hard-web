@@ -16,7 +16,11 @@ const API_KEY_IMGBB = "53b1440dc07ac33983ca315f13a661e9";
 
 const CLAVE_MAESTRA = "alanmiguel2020";
 
-// --- SEGURIDAD ---
+// --- VARIABLES GLOBALES PARA RECORTE ---
+let cropper;
+let croppedBlob = null; 
+
+// --- SEGURIDAD: CONTROL DE ACCESO ---
 window.verificarAcceso = () => {
     const pass = document.getElementById('admin-password-input').value;
     if (pass === CLAVE_MAESTRA) {
@@ -41,7 +45,6 @@ window.toggleConfigMenu = () => {
     menu.style.display = menu.style.display === 'none' ? 'block' : 'none';
 };
 
-// Cerrar menú si clickeas fuera
 document.addEventListener('click', (e) => {
     const menu = document.getElementById('config-menu');
     const btn = document.querySelector('button[onclick="toggleConfigMenu()"]');
@@ -74,11 +77,48 @@ window.toggleStockInput = () => {
     }
 };
 
-// --- MODAL ---
+// --- MODAL PRINCIPAL ---
 document.getElementById('btn-open-modal').onclick = () => document.getElementById('modal-container').style.display = 'flex';
-const cerrar = () => document.getElementById('modal-container').style.display = 'none';
+const cerrar = () => {
+    document.getElementById('modal-container').style.display = 'none';
+    croppedBlob = null; // Limpiamos la imagen al cerrar
+};
 document.getElementById('btn-close-modal').onclick = cerrar;
 document.getElementById('btn-cancel').onclick = cerrar;
+
+// --- LÓGICA DE RECORTE (CROPPER) ---
+document.getElementById('p-image').addEventListener('change', function(e) {
+    if (e.target.files && e.target.files.length > 0) {
+        const reader = new FileReader();
+        reader.onload = function(event) {
+            document.getElementById('cropper-container').style.display = 'flex';
+            const img = document.getElementById('image-to-crop');
+            img.src = event.target.result;
+
+            if (cropper) cropper.destroy();
+            cropper = new Cropper(img, {
+                aspectRatio: 1, // Cuadrado perfecto
+                viewMode: 1,
+                autoCropArea: 1
+            });
+        };
+        reader.readAsDataURL(e.target.files[0]);
+    }
+});
+
+window.cancelarRecorte = () => {
+    document.getElementById('cropper-container').style.display = 'none';
+    document.getElementById('p-image').value = "";
+};
+
+window.finalizarRecorte = () => {
+    const canvas = cropper.getCroppedCanvas({ width: 600, height: 600 });
+    canvas.toBlob((blob) => {
+        croppedBlob = blob;
+        document.getElementById('cropper-container').style.display = 'none';
+        alert("¡Imagen lista!");
+    }, 'image/jpeg');
+};
 
 // --- LISTADO REAL-TIME ---
 onSnapshot(collection(db, "productos"), (snap) => {
@@ -97,17 +137,23 @@ onSnapshot(collection(db, "productos"), (snap) => {
     });
 });
 
-// --- GUARDAR PRODUCTO ---
+// --- GUARDAR PRODUCTO (CON IMAGEN RECORTADA) ---
 document.getElementById('admin-form').addEventListener('submit', async (e) => {
     e.preventDefault();
+    
+    if (!croppedBlob) {
+        alert("Miki, por favor selecciona y recorta la imagen antes de guardar.");
+        return;
+    }
+
     const btn = document.getElementById('btn-save');
     btn.innerText = "Subiendo...";
     btn.disabled = true;
 
     try {
-        const file = document.getElementById('p-image').files[0];
         const formData = new FormData();
-        formData.append("image", file);
+        // Usamos el BLOB recortado en lugar del archivo original
+        formData.append("image", croppedBlob, "producto.jpg");
         
         const resp = await fetch(`https://api.imgbb.com/1/upload?key=${API_KEY_IMGBB}`, { method: "POST", body: formData });
         const resData = await resp.json();
@@ -123,11 +169,17 @@ document.getElementById('admin-form').addEventListener('submit', async (e) => {
             fecha: new Date()
         });
 
-        alert("¡Guardado!");
+        alert("¡Guardado exitoso!");
         cerrar();
         e.target.reset();
-    } catch (e) { alert("Error al subir."); }
-    finally { btn.innerText = "Guardar Producto"; btn.disabled = false; }
+        croppedBlob = null; 
+    } catch (err) { 
+        alert("Error al subir."); 
+        console.error(err);
+    } finally { 
+        btn.innerText = "Guardar Producto"; 
+        btn.disabled = false; 
+    }
 });
 
 // --- BORRAR ---
@@ -143,33 +195,25 @@ window.actualizarPreciosMasivo = async (accion) => {
         return;
     }
 
-    const confirmar = confirm(`¿Estás seguro de querer ${accion === 'subir' ? 'AUMENTAR' : 'BAJAR'} todos los precios un ${porcentaje}%?`);
-    if (!confirmar) return;
+    if (!confirm(`¿Confirmas ${accion === 'subir' ? 'AUMENTAR' : 'BAJAR'} los precios un ${porcentaje}%?`)) return;
 
     try {
         const querySnapshot = await getDocs(collection(db, "productos"));
         const promesas = querySnapshot.docs.map(docSnapshot => {
             const data = docSnapshot.data();
             const precioViejo = parseFloat(data.precio);
-            let nuevoPrecio;
-
-            if (accion === 'subir') {
-                nuevoPrecio = precioViejo * (1 + (porcentaje / 100));
-            } else {
-                nuevoPrecio = precioViejo * (1 - (porcentaje / 100));
-            }
+            let nuevoPrecio = accion === 'subir' ? precioViejo * (1 + (porcentaje / 100)) : precioViejo * (1 - (porcentaje / 100));
 
             const docRef = doc(db, "productos", docSnapshot.id);
             return updateDoc(docRef, { precio: parseFloat(nuevoPrecio.toFixed(2)) });
         });
 
         await Promise.all(promesas);
-        alert("Precios actualizados con éxito.");
+        alert("Precios actualizados.");
         inputPorcentaje.value = "";
         window.toggleConfigMenu();
     } catch (error) {
-        alert("Error al actualizar precios.");
+        alert("Error al actualizar.");
         console.error(error);
     }
 };
-
