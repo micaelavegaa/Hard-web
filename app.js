@@ -151,7 +151,7 @@ window.hideToast = () => {
 document.getElementById('btn-whatsapp').onclick = () => {
     if (cart.length === 0) return alert("El carrito está vacío.");
     
-    let message = "Hola HARD! ¿Cuál es el costo de envío?, Quiero realizar este pedido:\n\n";
+    let message = "Hola HARD! Quiero realizar este pedido:\n¿Cuál es el costo de envío?\n";
     let grandTotal = 0;
     
     cart.forEach(i => {
