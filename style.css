@@ -26,14 +26,80 @@
 .nav-links a { color: white; text-decoration: none; font-weight: 400; font-size: 0.9rem; text-transform: none; }
 .nav-links a.active { border-bottom: 2px solid var(--blue); padding-bottom: 5px; }
 
-/* PRODUCT GRID */
-.product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 40px; margin: 50px 0; }
-.p-card { text-align: center; }
-.p-card img { width: 100%; aspect-ratio: 1; object-fit: contain; margin-bottom: 15px; }
-.p-card h3 { font-size: 1rem; font-weight: 400; color: #666; margin-bottom: 8px; }
-.p-card .price { font-size: 1.1rem; font-weight: 700; margin-bottom: 12px; }
-.btn-buy { color: var(--black); text-decoration: underline; font-weight: 600; background: none; border: none; cursor: pointer; }
+/* PRODUCT GRID - Estilo Morelia */
+.product-grid { 
+    display: grid; 
+    /* Cambiamos a 4 columnas fijas para que no se estiren de más */
+    grid-template-columns: repeat(4, 1fr); 
+    gap: 30px; 
+    margin: 50px auto; 
+    max-width: 1140px; /* Esto crea el "margen" lateral que buscás */
+    padding: 0 10px;
+}
 
+.p-card { 
+    text-align: center; 
+    padding: 15px;
+    transition: transform 0.3s ease; /* Efecto suave al pasar el mouse */
+}
+
+.p-card:hover {
+    transform: translateY(-5px); /* Se levanta un poquito como en Tiendanube */
+}
+
+.p-card img { 
+    width: 100%; 
+    aspect-ratio: 1; 
+    object-fit: contain; 
+    margin-bottom: 20px; 
+    background-color: #f9f9f9; /* Fondo muy suave para la foto */
+    border-radius: 4px;
+}
+
+.p-card h3 { 
+    font-size: 0.9rem; /* Un poco más chico es más fino */
+    font-weight: 400; 
+    color: #444; 
+    margin-bottom: 10px; 
+    height: 40px; /* Mantiene los títulos alineados */
+    overflow: hidden;
+}
+
+.p-card .price { 
+    font-size: 1rem; 
+    font-weight: 700; 
+    color: var(--primary-dark);
+    margin-bottom: 15px; 
+    display: block;
+}
+
+.btn-buy { 
+    color: var(--primary-red); /* El rojo de HARD para resaltar */
+    text-decoration: none; 
+    font-weight: 600; 
+    background: none; 
+    border: 1px solid var(--primary-red); /* Botón con borde fino */
+    padding: 8px 20px;
+    border-radius: 2px;
+    cursor: pointer; 
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    transition: 0.3s;
+}
+
+.btn-buy:hover {
+    background: var(--primary-red);
+    color: white;
+}
+
+/* AJUSTE PARA MÓVILES (2 PRODUCTOS) */
+@media (max-width: 768px) {
+    .product-grid { 
+        grid-template-columns: repeat(2, 1fr); 
+        gap: 15px; 
+        margin: 20px auto;
+    }
+}
 /* FOOTER */
 .black-footer { background: var(--black); color: white; padding: 60px 0; text-align: center; margin-top: 100px; }
 .footer-logo { height: 60px; margin-bottom: 30px; }
@@ -420,3 +486,4 @@ body.admin-body { background-color: var(--bg-light); color: var(--text-dark); }
     font-weight: 600;
     text-decoration: underline;
 }
+
