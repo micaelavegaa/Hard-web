@@ -6,6 +6,8 @@
     <title>Administrador HARD</title>
     <link rel="icon" type="image/png" href="logo.png">
     <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.13/cropper.min.js"></script>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body class="admin-body">
@@ -118,7 +120,21 @@
             </div>
         </div>
     </div>
-
+    <div id="cropper-container" class="modal-overlay" style="z-index: 3000;">
+        <div class="modal-box" style="max-width: 90%; width: 500px;">
+            <div class="modal-header">
+                <h3>Recortar Imagen</h3>
+            </div>
+            <div style="padding: 20px; max-height: 400px; overflow: hidden;">
+                <img id="image-to-crop" style="max-width: 100%;">
+            </div>
+            <div class="modal-footer">
+                <button type="button" onclick="cancelarRecorte()" class="btn-text">Cancelar</button>
+                <button type="button" onclick="finalizarRecorte()" class="btn-primary-red">Cortar y Usar</button>
+            </div>
+        </div>
+    </div>
     <script type="module" src="admin.js"></script>
 </body>
 </html>
+
