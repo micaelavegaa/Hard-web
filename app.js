@@ -12,7 +12,7 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-const WHATSAPP = "5493765295796";
+const WHATSAPP = "5493764326681";
 
 // Carrito con persistencia (localStorage)
 let cart = JSON.parse(localStorage.getItem('hard_cart_v2')) || [];
@@ -176,3 +176,4 @@ window.toggleContactModal = () => {
     const modal = document.getElementById('contact-modal');
     modal.style.display = (modal.style.display === 'none' || modal.style.display === '') ? 'flex' : 'none';
 };
+
