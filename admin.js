@@ -38,6 +38,17 @@ if (sessionStorage.getItem('admin_auth') === 'true') {
     document.getElementById('admin-protected-content').style.display = 'block';
 }
 
+// --- LÓGICA DE INTERFAZ (STOCK) ---
+// Esta función asegura que el cuadrito se vea o se oculte correctamente
+const syncStockUI = () => {
+    const type = document.getElementById('p-stock-type').value;
+    const valInput = document.getElementById('p-stock-value');
+    const isInf = type === "Infinito";
+    
+    valInput.style.visibility = isInf ? "hidden" : "visible";
+    valInput.required = !isInf;
+};
+
 // --- MANEJO DE MODAL ---
 const cerrarModal = () => {
     modalContainer.style.display = 'none';
@@ -49,6 +60,10 @@ const cerrarModal = () => {
 document.getElementById('btn-open-modal').addEventListener('click', () => {
     editId = null;
     adminForm.reset();
+    
+    // Forzamos la vista correcta al abrir para "Nuevo"
+    syncStockUI(); 
+    
     document.getElementById('modal-title').innerText = "Nuevo Producto";
     document.getElementById('img-status').innerText = "La imagen es obligatoria.";
     modalContainer.style.display = 'flex';
@@ -57,13 +72,9 @@ document.getElementById('btn-open-modal').addEventListener('click', () => {
 document.getElementById('btn-close-modal').addEventListener('click', cerrarModal);
 document.getElementById('btn-cancel').addEventListener('click', cerrarModal);
 
-// --- STOCK TOGGLE ---
-document.getElementById('p-stock-type').addEventListener('change', (e) => {
-    const isInf = e.target.value === "Infinito";
-    const valInput = document.getElementById('p-stock-value');
-    valInput.style.visibility = isInf ? "hidden" : "visible";
-    valInput.required = !isInf;
-});
+// Escuchador para cambios manuales en el selector de stock
+document.getElementById('p-stock-type').addEventListener('change', syncStockUI);
+
 
 // --- LISTADO Y ACCIONES (DELEGACIÓN) ---
 onSnapshot(collection(db, "productos"), (snap) => {
@@ -94,11 +105,15 @@ tbody.addEventListener('click', (e) => {
         editId = d.id;
         document.getElementById('p-name').value = d.nombre;
         document.getElementById('p-price').value = d.precio;
+        
+        // Verificamos si es infinito para setear el selector
         const isInf = d.stock === "∞";
         document.getElementById('p-stock-type').value = isInf ? "Infinito" : "Manual";
-        const valInput = document.getElementById('p-stock-value');
-        valInput.value = isInf ? "" : d.stock;
-        valInput.style.visibility = isInf ? "hidden" : "visible";
+        document.getElementById('p-stock-value').value = isInf ? "" : d.stock;
+        
+        // Sincronizamos la UI para que aparezca/desaparezca el input
+        syncStockUI();
+
         document.getElementById('modal-title').innerText = "Editar Producto";
         document.getElementById('img-status').innerText = "Opcional (deja vacío para mantener la actual).";
         modalContainer.style.display = 'flex';
@@ -233,6 +248,7 @@ window.actualizarPreciosMasivo = async (accion) => {
         console.error(error);
     }
 };
+
 
 
 
