@@ -234,5 +234,5 @@ window.actualizarPreciosMasivo = async (accion) => {
     }
 };
 
-document.getElementById('btn-mass-up').addEventListener('click', () => massChange('up'));
-document.getElementById('btn-mass-down').addEventListener('click', () => massChange('down'));
+
+
