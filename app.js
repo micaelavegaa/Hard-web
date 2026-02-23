@@ -161,7 +161,14 @@ document.getElementById('btn-whatsapp').onclick = () => {
     });
     
     message += `\n*Total: $${grandTotal.toLocaleString('es-AR')}*`;
+    
+    // Abre la ventana de WhatsApp
     window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message)}`);
+
+    // --- ESTO ES LO NUEVO ---
+    cart = [];           // Vacía el carrito en el código
+    saveAndRefresh();    // Borra el localStorage y actualiza el contador y la lista
+    toggleCartModal();   // Cierra el panel del carrito para que el usuario vea la tienda limpia
 };
 
 loadProducts();
@@ -176,4 +183,5 @@ window.toggleContactModal = () => {
     const modal = document.getElementById('contact-modal');
     modal.style.display = (modal.style.display === 'none' || modal.style.display === '') ? 'flex' : 'none';
 };
+
 
