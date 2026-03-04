@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal de Ventas</title>
+    <link rel="icon" type="image/png" href="logo.png">
+    <link rel="stylesheet" href="style.css"> 
+    <link rel="stylesheet" href="pos-styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body class="pos-body">
+
+    <div id="pos-login-overlay" style="display: flex; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); align-items: center; justify-content: center; z-index: 99999; backdrop-filter: blur(10px);">
+        <div style="width: 350px; background: #1a1a1a; padding: 30px; border-radius: 15px; border: 1px solid #333; box-shadow: 0 10px 40px rgba(0,0,0,0.8); text-align: center;">
+            <img src="logo-hard.jpg" alt="HARD" style="height: 50px; margin-bottom: 20px;">
+            <h3 style="color: white; margin-bottom: 10px; font-family: 'Montserrat', sans-serif;">Administrador de Ventas</h3>
+            <p style="font-size: 0.85rem; color: #666; margin-bottom: 20px;">Ingresá la clave de Vendedor.</p>
+            
+            <input type="password" id="pos-password-input" placeholder="Contraseña de ventas..." 
+                style="width: 100%; padding: 10px; margin-bottom: 10px; border: 1px solid #ddd;">
+            
+            <button id="btn-pos-login" style="width: 100%; padding: 15px; background: #D92525; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; text-transform: uppercase; letter-spacing: 1px;">
+                Acceder
+            </button>
+            <p id="pos-login-error" style="color: #D92525; font-size: 0.8rem; margin-top: 15px; display: none;">❌ Contraseña incorrecta</p>
+        </div>
+    </div>
+
+    <header class="pos-header no-print">
+        <div class="header-top-bar">
+            <div class="logo-container">
+                <img src="logo-hard.jpg" alt="HARD Logo" class="hard-logo-img">
+                <span class="brand-text">HARD <span class="pos-label">Repuestos y Lubricantes</span></span>
+            </div>
+            
+            <div class="user-info-header">
+                <span class="operator-label">Operador:</span> 
+                <span class="operator-name">Admin</span>
+                <a href="admin.html" class="ir-admin-link">Ir al Panel Admin</a>
+            </div>
+        </div>
+
+        <nav class="pos-nav-large">
+            <button onclick="showSection('venta')" class="nav-btn-large active" id="btn-nav-venta">
+                <span class="icon">🛒</span>
+                <span class="text">Nueva Venta</span>
+            </button>
+            <button onclick="showSection('pendientes')" class="nav-btn-large" id="btn-nav-pendientes">
+                <span class="icon">⏳</span>
+                <span class="text">Pendientes</span>
+            </button>
+            <button onclick="showSection('historial')" class="nav-btn-large" id="btn-nav-historial">
+                <span class="icon">📋</span>
+                <span class="text">Historial Hoy</span>
+            </button>
+            <button onclick="showSection('movimientos')" class="nav-btn-large" id="btn-nav-movimientos">
+                <span class="icon">💸</span>
+                <span class="text">Movimientos</span>
+            </button>
+        </nav>
+    </header>
+
+    <main class="pos-main-content no-print">
+        
+        <section id="section-venta" class="pos-section">
+            <div class="venta-grid">
+                <div class="venta-main-panel">
+                    <div class="scanner-box-v2">
+                        <label class="scanner-label">BUSCADOR O ESCÁNER</label>
+                        <div class="input-wrapper" style="position: relative;">
+                            <span class="scanner-icon">🔍</span>
+                            <input type="text" id="pos-barcode-input" placeholder="Escribí nombre o escaneá código..." autofocus autocomplete="off">
+                            <div id="pos-suggestions" class="suggestions-list no-print"></div>
+                        </div>
+                    </div>
+
+                    <div class="table-container-v2">
+                        <table class="pos-table-v2">
+                            <thead>
+                                <tr>
+                                    <th>Repuesto</th>
+                                    <th>Precio</th>
+                                    <th>Cant.</th>
+                                    <th>Subtotal</th>
+                                    <th>Acción</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pos-cart-body">
+                                </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <aside class="venta-summary-panel">
+                    <div class="summary-card-v2">
+                        <h3 class="summary-title">Finalizar Operación</h3>
+                        
+                        <div class="form-group-v2">
+                            <label>Cliente / Patente <span class="optional">(Opcional)</span></label>
+                            <input type="text" id="pos-customer-name" placeholder="Identificador del cliente.">
+                        </div>
+                        
+                        <div class="summary-divider"></div>
+                        
+                        <div class="summary-totals">
+                            <div class="total-row subtotal-row">
+                                <span>Subtotal:</span>
+                                <span id="pos-subtotal" class="amount">$ 0.00</span>
+                            </div>
+
+                            <div class="form-group-v2 discount-group">
+                                <label>Descuento Directo ($)</label>
+                                <input type="number" id="pos-discount" value="0" step="0.01">
+                            </div>
+
+                            <div class="total-big-v2">
+                                <label class="total-label">TOTAL A COBRAR</label>
+                                <div id="pos-total-price" class="total-amount">$ 0.00</div>
+                            </div>
+                        </div>
+
+                        <div class="form-group-v2">
+                            <label>Condición de Venta / Pago</label>
+                            <select id="pos-sale-status">
+                                <option value="Efectivo">Efectivo</option>
+                                <option value="Transferencia">Trasferencia</option>
+                                <option value="Tarjeta">Tarjeta (Débito/Crédito)</option>
+                                <option value="Pendiente">Pendiente</option>
+                            </select>
+                        </div>
+
+                        <button id="btn-finish-sale" class="btn-finalize-v2">
+                            <span class="icon">🖨️</span>
+                            <span class="text">PROCESAR Y TICKET (F2)</span>
+                        </button>
+                    </div>
+                </aside>
+            </div>
+        </section>
+
+        <section id="section-pendientes" class="pos-section" style="display:none;">
+            <div class="section-header-v2">
+                <span class="icon">⏳</span>
+                <h2>Cuentas Pendientes</h2>
+            </div>
+            <div id="pendientes-list" class="list-container-v2">
+                </div>
+        </section>
+
+        <section id="section-historial" class="pos-section" style="display:none;">
+            <div class="section-header-v2">
+                <span class="icon">📋</span>
+                <h2>Historial de Ventas del Día</h2>
+            </div>
+            <div id="historial-list" class="list-container-v2">
+                </div>
+        </section>
+        <div id="section-movimientos" class="pos-section" style="display:none;">
+            <div class="scanner-box-v2">
+                <div class="section-header-v2">
+                    <span class="icon">💸</span>
+                    <h2>Registrar Salida de Dinero</h2>
+                </div>
+                
+                <div style="display: grid; grid-template-columns: 2fr 1fr 1fr auto; gap: 10px; padding: 15px; background: var(--bg-dark-panel); border-radius: 8px;">
+                    <input type="text" id="gasto-motivo" placeholder="Motivo (Ej: Coca-cola, Pago a Juan Repuestos)" style="padding: 10px; border-radius: 4px; border: 1px solid #333; background: #1a1a1a; color: white;">
+                    <input type="number" id="gasto-monto" placeholder="Monto $" style="padding: 10px; border-radius: 4px; border: 1px solid #333; background: #1a1a1a; color: white;">
+                    <select id="gasto-metodo" style="padding: 10px; border-radius: 4px; border: 1px solid #333; background: #1a1a1a; color: white;">
+                        <option value="Efectivo">Efectivo</option>
+                        <option value="Transferencia">Transferencia</option>
+                    </select>
+                    <button onclick="registrarGasto()" class="btn-cobrar-v2" style="background: var(--hard-red); padding: 10px 20px;">Registrar</button>
+                </div>
+            </div>
+
+            <div class="section-header-v2" style="margin-top: 30px;">
+                <span class="icon">📋</span>
+                <h2>Historial de Gastos del Día</h2>
+            </div>
+            
+            <div class="table-container-v2">
+                <table class="pos-table-v2">
+                    <thead>
+                        <tr>
+                            <th>Hora</th>
+                            <th>Motivo</th>
+                            <th>Método</th>
+                            <th>Monto</th>
+                            <th>Acción</th>
+                        </tr>
+                    </thead>
+                    <tbody id="gastos-body">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div id="modal-ticket" class="modal-overlay-v2 no-print" style="display:none;">
+        <div class="modal-ticket-box">
+            <div class="modal-header-v2">
+                <h3>Vista Previa del Ticket</h3>
+                <button onclick="cerrarTicket()" class="close-modal-btn">&times;</button>
+            </div>
+            <div id="ticket-visual" class="ticket-thermal-view">
+                </div>
+            <div class="modal-footer-v2">
+                <button onclick="cerrarTicket()" class="btn-secondary-v2">Cerrar</button>
+                <button onclick="ejecutarImpresion()" class="btn-primary-v2">Imprimir</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="ticket-print-area" class="print-only thermal-paper"></div>
+        <div id="modal-cobrar-fiado" class="modal-overlay-v2" style="display: none;">
+        <div class="modal-ticket-box" style="width: 320px; background: #1a1a1a; color: white; padding: 20px; text-align: center; border: 1px solid #333;">
+            <h3 id="cobrar-titulo" style="margin-bottom: 20px; font-size: 1.1rem;">Cobrar a Cliente</h3>
+            <p style="color: #888; font-size: 0.85rem; margin-bottom: 20px;">Seleccioná el método de pago:</p>
+            
+            <div style="display: flex; flex-direction: column; gap: 10px;">
+                <button onclick="confirmarCobro('Efectivo')" class="btn-cobrar-opcion" style="background: #2E7D32;">💵 Efectivo</button>
+                <button onclick="confirmarCobro('Transferencia')" class="btn-cobrar-opcion" style="background: #0288D1;">📱 Transferencia</button>
+                <button onclick="confirmarCobro('Tarjeta')" class="btn-cobrar-opcion" style="background: #7B1FA2;">💳 Tarjeta</button>
+                <button onclick="cerrarModalCobro()" style="background: transparent; color: #666; border: none; margin-top: 10px; cursor: pointer;">Cancelar</button>
+            </div>
+        </div>
+    </div>
+    <div class="pos-clock-container">
+        <span id="pos-clock-date"></span>
+        <span id="pos-clock-time"></span>
+    </div>
+    <script type="module" src="pos.js"></script>
+</body>
+</html>

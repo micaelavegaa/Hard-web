@@ -1,0 +1,834 @@
+/* =========================================================
+   HARD POS TERMINAL - ESTILO PROFESIONAL OSCURO
+   ========================================================= */
+
+/* --- IMPORTACIÓN DE FUENTES --- */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap');
+
+/* --- VARIABLES DE COLOR (Respetando el estilo HARD) --- */
+:root {
+    --hard-red: #D92525;        /* Rojo principal de los botones */
+    --hard-red-hover: #b71c1c;  /* Rojo más oscuro para hover */
+    --bg-dark-deep: #0a0a0a;    /* Fondo de página más profundo */
+    --bg-dark-panel: #1a1a1a;   /* Fondo de paneles y tarjetas */
+    --bg-dark-input: #000000;   /* Fondo negro puro para inputs */
+    --text-main: #e0e0e0;       /* Texto principal gris claro */
+    --text-muted: #888888;      /* Texto secundario/apagado */
+    --border-color: #333333;    /* Color de bordes sutiles */
+    --scanner-green: #00FF41;   /* Verde fluorescente para el lector */
+}
+
+/* --- ESTILOS BASE --- */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body.pos-body {
+    background-color: var(--bg-dark-deep);
+    color: var(--text-main);
+    font-family: 'Montserrat', sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column; /* Estructura vertical: Header arriba, Contenido abajo */
+    overflow: hidden; /* Evitamos scroll en el body entero */
+}
+
+/* =========================================================
+   HEADER PRINCIPAL: LOGO, INFO OPERADOR Y NAVEGACIÓN GRANDE
+   ========================================================= */
+.pos-header {
+    background-color: var(--bg-dark-panel);
+    border-bottom: 2px solid var(--border-color);
+    padding: 10px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/* Fila superior del header */
+.header-top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+/* Contenedor del Logo HARD */
+.logo-container {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.hard-logo-img {
+    height: 45px; /* Ajusta la altura del logo según necesites */
+    width: auto;
+    object-fit: contain;
+}
+
+.brand-text {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 700;
+    letter-spacing: 1px;
+}
+
+.brand-text .pos-label {
+    color: var(--hard-red);
+    font-weight: 400;
+    font-size: 1.2rem;
+}
+
+/* Info del Operador y enlace admin */
+.user-info-header {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-size: 0.9rem;
+    color: var(--text-muted);
+}
+
+.operator-name {
+    color: white;
+    font-weight: 600;
+}
+
+.ir-admin-link {
+    color: var(--text-muted);
+    text-decoration: none;
+    transition: color 0.3s;
+}
+
+.ir-admin-link:hover {
+    color: white;
+    text-decoration: underline;
+}
+
+/* NAVEGACIÓN DE OPCIONES GRANDES (Estilo Panel de Control) */
+.pos-nav-large {
+    display: flex;
+    gap: 15px;
+    justify-content: center; /* Centramos los botones grandes */
+    padding-bottom: 10px;
+}
+/* Lista de sugerencias del buscador POS */
+.suggestions-list {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #252525;
+    border: 1px solid #444;
+    border-radius: 0 0 8px 8px;
+    z-index: 2000;
+    max-height: 300px;
+    overflow-y: auto;
+    display: none; /* Se muestra solo al buscar */
+    box-shadow: 0 10px 20px rgba(0,0,0,0.5);
+}
+
+.suggestion-item {
+    padding: 12px 15px;
+    border-bottom: 1px solid #333;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s;
+}
+
+.suggestion-item:hover {
+    background: #D92525; /* Rojo HARD al pasar el mouse */
+}
+
+.suggestion-item .prod-name { font-weight: 600; color: white; }
+.suggestion-item .prod-price { color: #aaa; font-size: 0.9rem; }
+
+.nav-btn-large {
+    background-color: #252525; /* Fondo oscuro intermedio para botones inactivos */
+    border: 2px solid var(--border-color);
+    border-radius: 12px;
+    color: var(--text-muted);
+    padding: 20px 30px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column; /* Icono arriba, texto abajo */
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 200px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+/* Efectos hover */
+.nav-btn-large:hover {
+    background-color: #333;
+    color: white;
+    border-color: #555;
+    transform: translateY(-3px);
+}
+
+/* Estado ACTIVO (La opción seleccionada) */
+.nav-btn-large.active {
+    background-color: var(--hard-red);
+    color: white;
+    border-color: var(--hard-red);
+    box-shadow: 0 6px 20px rgba(217, 37, 37, 0.4);
+}
+
+.nav-btn-large.active:hover {
+    background-color: var(--hard-red-hover);
+}
+
+/* Detalles internos de los botones grandes */
+.nav-btn-large .icon {
+    font-size: 2.2rem; /* Icono grande */
+}
+
+.nav-btn-large .text {
+    font-size: 1.1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* =========================================================
+   CONTENIDO PRINCIPAL Y SECCIONES
+   ========================================================= */
+.pos-main-content {
+    flex: 1; /* Ocupa el resto del espacio vertical */
+    padding: 30px;
+    overflow-y: auto; /* Scroll solo en el contenido si es necesario */
+}
+
+/* Títulos de secciones secundarias */
+.section-header-v2 {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--border-color);
+}
+
+.section-header-v2 h2 {
+    color: white;
+    font-size: 1.8rem;
+    font-weight: 700;
+}
+
+.section-header-v2 .icon {
+    font-size: 2.5rem;
+    color: var(--hard-red);
+}
+
+/* =========================================================
+   GRID DE VENTAS (NUEVA VENTA)
+   ========================================================= */
+.venta-grid {
+    display: grid;
+    grid-template-columns: 1fr 400px; /* Panel izquierdo grande, resumen derecho fijo */
+    gap: 30px;
+    align-items: start;
+}
+
+/* PANEL IZQUIERDO: ESCÁNER Y TABLA */
+.venta-main-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+/* CAJA DE ESCÁNER REDISEÑADA */
+.scanner-box-v2 {
+    background-color: var(--bg-dark-panel);
+    padding: 25px;
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.scanner-label {
+    color: var(--hard-red);
+    font-weight: 700;
+    font-size: 1.1rem;
+    display: block;
+    margin-bottom: 15px;
+    letter-spacing: 1px;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.scanner-icon {
+    position: absolute;
+    left: 15px;
+    font-size: 1.5rem;
+    color: #444;
+}
+
+#pos-barcode-input {
+    width: 100%;
+    background-color: var(--bg-dark-input);
+    border: 2px solid var(--border-color);
+    padding: 18px 18px 18px 55px; /* Espacio para el icono */
+    color: var(--scanner-green); /* Verde fluorescente para el lector */
+    font-family: 'Courier New', monospace;
+    font-size: 1.8rem;
+    font-weight: 700;
+    border-radius: 8px;
+    transition: all 0.3s;
+    letter-spacing: 2px;
+}
+
+#pos-barcode-input:focus {
+    border-color: var(--hard-red);
+    outline: none;
+    box-shadow: 0 0 15px rgba(217, 37, 37, 0.3);
+}
+
+/* TABLA DE PRODUCTOS DEL CARRITO REDISEÑADA */
+.table-container-v2 {
+    background-color: var(--bg-dark-panel);
+    border-radius: 15px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+.pos-table-v2 {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.pos-table-v2 th {
+    background-color: #252525;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 15px;
+    text-align: left;
+    letter-spacing: 1px;
+}
+
+.pos-table-v2 td {
+    padding: 18px 15px;
+    border-bottom: 1px solid #2a2a2a;
+    font-size: 1rem;
+    color: white;
+}
+
+/* Columna de cantidad input */
+.pos-table-v2 td input[type="number"] {
+    width: 60px;
+    background-color: #333;
+    color: white;
+    border: 1px solid #444;
+    padding: 8px;
+    border-radius: 4px;
+    text-align: center;
+    font-weight: 600;
+}
+
+/* Columna de subtotal en negrita */
+.pos-table-v2 td.subtotal-col {
+    font-weight: 700;
+}
+
+/* Botón eliminar */
+.pos-table-v2 td .btn-remove-item {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    cursor: pointer;
+    font-size: 1.2rem;
+    transition: color 0.3s;
+}
+
+.pos-table-v2 td .btn-remove-item:hover {
+    color: var(--hard-red);
+}
+
+/* =========================================================
+   RESUMEN DE VENTA (LADO DERECHO - PANEL FIJO)
+   ========================================================= */
+.venta-summary-panel {
+    position: sticky; /* Se queda fijo al hacer scroll en contenido largo */
+    top: 0;
+}
+
+.summary-card-v2 {
+    background-color: var(--bg-dark-panel);
+    padding: 30px;
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+}
+
+.summary-title {
+    margin-top: 0;
+    color: white;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+}
+
+/* Divisores sutiles */
+.summary-divider {
+    border: 0;
+    border-top: 2px solid var(--border-color);
+    margin: 25px 0;
+}
+
+/* ZONA DE TOTALES GRANDE */
+.total-big-v2 {
+    background-color: var(--bg-dark-input);
+    padding: 30px 15px;
+    border-radius: 12px;
+    text-align: center;
+    margin: 25px 0;
+    border: 2px solid var(--hard-red);
+    box-shadow: inset 0 0 15px rgba(217, 37, 37, 0.1);
+}
+
+.total-label {
+    display: block;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    letter-spacing: 1px;
+}
+
+.total-amount {
+    font-size: 3rem; /* Total MUY grande */
+    font-weight: 800;
+    color: var(--hard-red);
+    letter-spacing: -1px;
+}
+
+/* Filas de subtotal y descuento */
+.summary-totals .total-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    color: var(--text-main);
+    font-size: 1rem;
+}
+
+.summary-totals .subtotal-row .amount {
+    font-weight: 600;
+}
+
+/* Input de descuento específico */
+.discount-group input {
+    color: var(--hard-red);
+    font-weight: 700;
+}
+
+/* GRUPOS DE FORMULARIO DEL POS */
+.form-group-v2 {
+    margin-bottom: 20px;
+}
+
+.form-group-v2 label {
+    display: block;
+    color: var(--text-muted);
+    margin-bottom: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.form-group-v2 label .optional {
+    color: #555;
+    font-weight: 400;
+    font-size: 0.8rem;
+}
+
+.form-group-v2 input, .form-group-v2 select {
+    width: 100%;
+    padding: 12px;
+    background-color: var(--bg-dark-input);
+    border: 1px solid var(--border-color);
+    color: white;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.3s;
+}
+
+.form-group-v2 input:focus, .form-group-v2 select:focus {
+    border-color: var(--hard-red);
+    outline: none;
+}
+
+/* BOTÓN FINALIZAR GRANDE */
+.btn-finalize-v2 {
+    width: 100%;
+    background-color: var(--hard-red);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    padding: 22px; /* Muy alto */
+    font-size: 1.3rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    box-shadow: 0 6px 20px rgba(217, 37, 37, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.btn-finalize-v2:hover {
+    background-color: var(--hard-red-hover);
+    transform: translateY(-3px);
+    box-shadow: 0 8px 25px rgba(217, 37, 37, 0.5);
+}
+
+.btn-finalize-v2:active {
+    transform: translateY(1px);
+}
+
+.btn-finalize-v2 .icon {
+    font-size: 1.6rem;
+}
+
+/* =========================================================
+   ESTILOS PARA PENDIENTES Y HISTORIAL
+   ========================================================= */
+.list-container-v2 {
+    /* Mismo estilo de contenedor de tabla */
+    background-color: var(--bg-dark-panel);
+    border-radius: 15px;
+    padding: 10px;
+    border: 1px solid var(--border-color);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+
+/* Botón Cobrar genérico */
+.btn-cobrar-v2 {
+    background-color: #2E7D32; /* Verde éxito */
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9rem;
+    transition: background 0.3s;
+}
+
+.btn-cobrar-v2:hover {
+    background-color: #1b5e20;
+}
+
+
+/* =========================================================
+   MODALES (VISTA PREVIA TICKET)
+   ========================================================= */
+
+/* --- MODAL DE TICKET --- */
+
+.modal-overlay-v2 {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.9); /* Fondo muy oscuro */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-ticket-box {
+    width: 380px; /* Un poco más ancho que el papel real */
+    background-color: var(--bg-dark-panel);
+    border-radius: 15px;
+    border: 1px solid var(--border-color);
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.6);
+}
+
+.modal-header-v2 {
+    padding: 15px 20px;
+    background-color: #222;
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-header-v2 h3 {
+    margin: 0;
+    color: white;
+    font-size: 1.1rem;
+}
+
+.close-modal-btn {
+    background: none;
+    border: none;
+    color: var(--text-muted);
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
+/* Visualización simulada del papel térmico */
+.ticket-thermal-view {
+    padding: 25px;
+    background-color: white; /* Simulamos papel blanco */
+    color: black; /* Texto negro */
+    font-family: 'Courier New', Courier, monospace; /* Fuente de ticket */
+    font-size: 13px;
+    line-height: 1.3;
+    max-height: 500px;
+    overflow-y: auto; /* Scroll interno si es muy largo */
+    flex: 1; /* Esto obliga al ticket a tomar el alto disponible */
+    min-height: 400px; /* Asegura que no se vea "chato" */
+}
+
+/* Detalles internos del ticket simulado */
+.ticket-thermal-view h2 { margin: 0; color: black; }
+.ticket-thermal-view p { margin: 5px 0; color: black; }
+.ticket-thermal-view table { width: 100%; color: black; }
+.ticket-thermal-view td { vertical-align: 3px; color: black; }
+
+.modal-footer-v2 {
+    padding: 15px 20px;
+    background-color: #222;
+    border-top: 1px solid var(--border-color);
+    display: flex;
+    gap: 10px;
+}
+
+.btn-secondary-v2, .btn-primary-v2 {
+    flex: 1;
+    padding: 12px;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: uppercase;
+}
+
+.btn-secondary-v2 {
+    background-color: #444;
+    color: white;
+}
+
+.btn-primary-v2 {
+    background-color: var(--hard-red);
+    color: white;
+}
+
+.btn-primary-v2:hover { background-color: var(--hard-red-hover); }
+
+/* =========================================================
+   ESTILOS DE IMPRESIÓN (REAL TICKET TÉRMICO)
+   ========================================================= */
+/* Área real que el navegador manda a la impresora */
+.thermal-paper {
+    width: 80mm; /* AJUSTA AQUÍ: 80mm o 58mm según tu impresora */
+    margin: 0 auto;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 12pt;
+    line-height: 1.2;
+    color: black;
+    background: white;
+}
+
+@media print {
+    /* Ocultamos TODO lo que no sea el área de impresión */
+    body.pos-body * { visibility: hidden !important; }
+    #ticket-print-area, #ticket-print-area * { visibility: visible !important; }
+    
+    #ticket-print-area {
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 100%; /* El driver de la térmica maneja el ancho real */
+        visibility: visible !important;
+    }
+}
+.btn-primary-v2 { background-color: var(--hard-red); color: white; }
+.print-only { display: none; }
+
+.fecha-separador {
+    background: #333;
+    color: var(--hard-red);
+    padding: 10px 20px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    border-radius: 8px 8px 0 0;
+    margin-top: 30px;
+    border-left: 5px solid var(--hard-red);
+}
+
+.historial-dia-group {
+    margin-bottom: 10px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.btn-ver-ticket {
+    background: transparent;
+    border: 1px solid #444;
+    color: white;
+    padding: 5px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.btn-ver-ticket:hover {
+    background: var(--hard-red);
+    border-color: var(--hard-red);
+}
+
+/* =========================================================
+   DISEÑO DE TARJETAS DE FIADO (PENDIENTES)
+   ========================================================= */
+.pendientes-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+    padding-top: 10px;
+}
+
+.fiado-card {
+    background: var(--bg-dark-panel);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 20px;
+    min-width: 100%;
+    transition: all 0.3s ease;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.2);
+}
+
+.fiado-card:hover {
+    border-color: var(--hard-red);
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(217, 37, 37, 0.2);
+}
+
+.fiado-header {
+    border-bottom: 1px solid #333;
+    padding-bottom: 10px;
+    margin-bottom: 15px;
+}
+
+.fiado-ticket {
+    font-family: 'Courier New', monospace;
+    font-size: 0.85rem;
+    color: var(--text-muted);
+}
+
+.fiado-cliente {
+    color: white;
+    font-size: 1.2rem;
+    font-weight: 700;
+    margin: 5px 0;
+    text-transform: uppercase;
+}
+
+.fiado-monto {
+    color: var(--hard-red);
+    font-size: 1.8rem;
+    font-weight: 800;
+    margin-bottom: 20px;
+}
+
+.fiado-footer {
+    display: flex;
+    gap: 10px;
+}
+
+/* --- BOTONES DE LAS TARJETAS --- */
+.btn-view-fiado, .btn-cobrar-v2 {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 6px;
+    font-weight: 700;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    transition: background 0.2s;
+}
+
+.btn-view-fiado {
+    background-color: #333;
+    color: #aaa;
+}
+
+.btn-view-fiado:hover {
+    background-color: #444;
+    color: white;
+}
+
+.btn-cobrar-v2 {
+    background-color: #2E7D32; /* Verde éxito */
+    color: white;
+}
+
+.btn-cobrar-v2:hover {
+    background-color: #1b5e20;
+}
+
+.btn-cobrar-opcion {
+    width: 100%;
+    padding: 15px;
+    border: none;
+    border-radius: 8px;
+    color: white;
+    font-weight: bold;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+.btn-cobrar-opcion:hover { transform: scale(1.02); border-right: 1.1; }
+.pos-clock-container {
+    text-align: right;
+    font-family: 'Courier New', monospace;
+    color: var(--hard-red); /* O el blanco si preferís */
+    padding: 10px;
+}
+
+#pos-clock-date {
+    display: block;
+    font-size: 0.8rem;
+    color: #888;
+    text-transform: uppercase;
+}
+
+#pos-clock-time {
+    display: block;
+    font-size: 1.4rem;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+.fecha-separador-gastos td {
+    border-left: 4px solid var(--hard-red) !important;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+.gasto-row:hover {
+    background: rgba(255, 255, 255, 0.05);
+}
