@@ -17,13 +17,21 @@ const WHATSAPP = "5493764326681";
 // Carrito con persistencia (localStorage)
 let cart = JSON.parse(localStorage.getItem('hard_cart_v2')) || [];
 
-// --- 1. MOTOR DE BÚSQUEDA ---
+// --- 1. MOTOR DE BÚSQUEDA INTELIGENTE ---
+// Busca por nombre visible y por barcode oculto
 document.getElementById('main-search').addEventListener('input', (e) => {
     const term = e.target.value.toLowerCase();
     const cards = document.querySelectorAll('.p-card');
     cards.forEach(card => {
         const name = card.querySelector('h3').innerText.toLowerCase();
-        card.style.display = name.includes(term) ? 'block' : 'none';
+        const barcode = card.dataset.barcode ? card.dataset.barcode.toLowerCase() : "";
+        
+        // Si el término coincide con el nombre O el código, se muestra
+        if (name.includes(term) || barcode.includes(term)) {
+            card.style.display = 'block';
+        } else {
+            card.style.display = 'none';
+        }
     });
 });
 
@@ -35,8 +43,9 @@ async function loadProducts() {
     
     snap.forEach(doc => {
         const p = doc.data();
+        // Guardamos el barcode en 'data-barcode' para que el buscador lo encuentre, pero no se muestra al usuario
         grid.innerHTML += `
-            <div class="p-card">
+            <div class="p-card" data-barcode="${p.barcode || ''}">
                 <img src="${p.imagen}" alt="${p.nombre}">
                 <div class="p-info">
                     <h3>${p.nombre}</h3>
@@ -85,7 +94,8 @@ function saveAndRefresh() {
 
 function updateCartUI() {
     const totalCount = cart.reduce((acc, item) => acc + item.qty, 0);
-    document.getElementById('cart-count').innerText = totalCount;
+    const cartCountEl = document.getElementById('cart-count');
+    if (cartCountEl) cartCountEl.innerText = totalCount;
     renderSidebar();
 }
 
@@ -101,6 +111,7 @@ function renderSidebar() {
     const totalEl = document.getElementById('cart-total-price');
     let total = 0;
     
+    if (!list) return; // Seguridad por si el elemento no existe en el DOM
     list.innerHTML = cart.length === 0 ? '<p class="empty-msg">Tu carrito está vacío</p>' : '';
 
     cart.forEach(item => {
@@ -123,14 +134,16 @@ function renderSidebar() {
         `;
     });
 
-    subtotalEl.innerText = `$ ${total.toLocaleString('es-AR')}`;
-    totalEl.innerText = `$ ${total.toLocaleString('es-AR')}`;
+    if (subtotalEl) subtotalEl.innerText = `$ ${total.toLocaleString('es-AR')}`;
+    if (totalEl) totalEl.innerText = `$ ${total.toLocaleString('es-AR')}`;
 }
 
 // --- 5. NOTIFICACIÓN TOAST ---
 function showToast(name, price, img) {
     const toast = document.getElementById('toast-notification');
     const body = document.getElementById('toast-body');
+    if (!toast || !body) return;
+
     body.innerHTML = `
         <img src="${img}" class="toast-img">
         <div class="toast-info">
@@ -144,7 +157,8 @@ function showToast(name, price, img) {
 }
 
 window.hideToast = () => {
-    document.getElementById('toast-notification').style.display = 'none';
+    const toast = document.getElementById('toast-notification');
+    if (toast) toast.style.display = 'none';
 };
 
 // --- 6. ENVÍO A WHATSAPP ---
@@ -162,26 +176,25 @@ document.getElementById('btn-whatsapp').onclick = () => {
     
     message += `\n*Total: $${grandTotal.toLocaleString('es-AR')}*`;
     
-    // Abre la ventana de WhatsApp
     window.open(`https://wa.me/${WHATSAPP}?text=${encodeURIComponent(message)}`);
 
-    // --- ESTO ES LO NUEVO ---
-    cart = [];           // Vacía el carrito en el código
-    saveAndRefresh();    // Borra el localStorage y actualiza el contador y la lista
-    toggleCartModal();   // Cierra el panel del carrito para que el usuario vea la tienda limpia
+    // Limpieza tras enviar pedido
+    cart = [];
+    saveAndRefresh();
+    toggleCartModal();
 };
 
-loadProducts();
-//información
+// --- MODALES DE INFO Y CONTACTO ---
 window.toggleInfoModal = () => {
     const modal = document.getElementById('info-modal');
-    // Si está cerrado lo abre, si está abierto lo cierra
     modal.style.display = (modal.style.display === 'none' || modal.style.display === '') ? 'flex' : 'none';
 };
-//contacto
+
 window.toggleContactModal = () => {
     const modal = document.getElementById('contact-modal');
     modal.style.display = (modal.style.display === 'none' || modal.style.display === '') ? 'flex' : 'none';
 };
 
+// Carga inicial
+loadProducts();
 
