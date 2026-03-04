@@ -39,7 +39,6 @@ if (sessionStorage.getItem('admin_auth') === 'true') {
 }
 
 // --- LÓGICA DE INTERFAZ (STOCK) ---
-// Esta función asegura que el cuadrito se vea o se oculte correctamente
 const syncStockUI = () => {
     const type = document.getElementById('p-stock-type').value;
     const valInput = document.getElementById('p-stock-value');
@@ -55,15 +54,14 @@ const cerrarModal = () => {
     adminForm.reset();
     editId = null;
     croppedBlob = null;
+    // Limpieza manual del campo barcode por seguridad
+    document.getElementById('p-barcode').value = "";
 };
 
 document.getElementById('btn-open-modal').addEventListener('click', () => {
     editId = null;
     adminForm.reset();
-    
-    // Forzamos la vista correcta al abrir para "Nuevo"
     syncStockUI(); 
-    
     document.getElementById('modal-title').innerText = "Nuevo Producto";
     document.getElementById('img-status').innerText = "La imagen es obligatoria.";
     modalContainer.style.display = 'flex';
@@ -71,8 +69,6 @@ document.getElementById('btn-open-modal').addEventListener('click', () => {
 
 document.getElementById('btn-close-modal').addEventListener('click', cerrarModal);
 document.getElementById('btn-cancel').addEventListener('click', cerrarModal);
-
-// Escuchador para cambios manuales en el selector de stock
 document.getElementById('p-stock-type').addEventListener('change', syncStockUI);
 
 
@@ -84,11 +80,25 @@ onSnapshot(collection(db, "productos"), (snap) => {
         const p = d.data();
         const tr = document.createElement('tr');
         tr.innerHTML = `
-            <td><div class="table-prod-info"><img src="${p.imagen}" class="thumb-admin"><strong>${p.nombre}</strong></div></td>
+            <td>
+                <div class="table-prod-info">
+                    <img src="${p.imagen}" class="thumb-admin">
+                    <div>
+                        <strong>${p.nombre}</strong><br>
+                        <small style="color: #888;">${p.barcode || 'Sin código'}</small>
+                    </div>
+                </div>
+            </td>
             <td><span class="stock-tag">${p.stock}</span></td>
             <td>$ ${parseFloat(p.precio).toLocaleString('es-AR', {minimumFractionDigits: 2})}</td>
             <td style="text-align: right;">
-                <button class="btn-edit-item" data-id="${d.id}" data-nombre="${p.nombre}" data-precio="${p.precio}" data-stock="${p.stock}" style="background:none; border:none; cursor:pointer; font-size:1.2rem;">✏️</button>
+                <button class="btn-edit-item" 
+                    data-id="${d.id}" 
+                    data-nombre="${p.nombre}" 
+                    data-precio="${p.precio}" 
+                    data-stock="${p.stock}" 
+                    data-barcode="${p.barcode || ''}"
+                    style="background:none; border:none; cursor:pointer; font-size:1.2rem;">✏️</button>
                 <button class="btn-del" data-id="${d.id}" style="margin-left:10px; background:none; border:none; cursor:pointer;">🗑️</button>
             </td>
         `;
@@ -105,15 +115,13 @@ tbody.addEventListener('click', (e) => {
         editId = d.id;
         document.getElementById('p-name').value = d.nombre;
         document.getElementById('p-price').value = d.precio;
+        document.getElementById('p-barcode').value = d.barcode; // Cargar el barcode al editar
         
-        // Verificamos si es infinito para setear el selector
         const isInf = d.stock === "∞";
         document.getElementById('p-stock-type').value = isInf ? "Infinito" : "Manual";
         document.getElementById('p-stock-value').value = isInf ? "" : d.stock;
         
-        // Sincronizamos la UI para que aparezca/desaparezca el input
         syncStockUI();
-
         document.getElementById('modal-title').innerText = "Editar Producto";
         document.getElementById('img-status').innerText = "Opcional (deja vacío para mantener la actual).";
         modalContainer.style.display = 'flex';
@@ -172,8 +180,10 @@ adminForm.addEventListener('submit', async (e) => {
 
         const type = document.getElementById('p-stock-type').value;
         const val = document.getElementById('p-stock-value').value;
+        
         const data = {
             nombre: document.getElementById('p-name').value,
+            barcode: document.getElementById('p-barcode').value.trim(), // Guardar barcode
             precio: parseFloat(document.getElementById('p-price').value),
             stock: type === "Infinito" ? "∞" : val
         };
@@ -182,11 +192,11 @@ adminForm.addEventListener('submit', async (e) => {
 
         if (editId) {
             await updateDoc(doc(db, "productos", editId), data);
-            alert("Actualizado!");
+            alert("¡Actualizado!");
         } else {
             if (!imageUrl) throw new Error("Falta la imagen");
             await addDoc(collection(db, "productos"), data);
-            alert("Guardado!");
+            alert("¡Guardado!");
         }
         cerrarModal();
     } catch (err) { alert(err.message); }
@@ -248,7 +258,4 @@ window.actualizarPreciosMasivo = async (accion) => {
         console.error(error);
     }
 };
-
-
-
 
