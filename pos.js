@@ -67,7 +67,11 @@ window.showSection = (sectionId) => {
     
     if(sectionId === 'pendientes') loadPendientes();
     if(sectionId === 'historial') loadHistorial();
-    if(sectionId === 'movimientos') loadGastos(); // <-- Nueva llamada
+    if(sectionId === 'movimientos') loadGastos(); 
+    if(sectionId === 'devoluciones') {
+        document.getElementById('dev-resultado-busqueda').innerHTML = "";
+        document.getElementById('dev-ticket-id').value = "";
+    }
 };
 
 // --- BUSCADOR EN VIVO (POS) ---
@@ -621,4 +625,93 @@ async function loadGastos() {
 }
 
 // Llamala al final de tu archivo o después de verificar seguridad
+// --- GESTIÓN DE DEVOLUCIONES ---
+
+// Función para buscar el ticket y mostrar sus detalles
+window.buscarTicketParaDevolucion = async () => {
+    const ticketId = document.getElementById('dev-ticket-id').value.trim();
+    const resultDiv = document.getElementById('dev-resultado-busqueda');
+    
+    if (!ticketId) return alert("⚠️ Por favor, ingresá un ID de ticket.");
+
+    // Buscamos el ticket exacto en la colección de ventas
+    const q = query(collection(db, "ventas"), where("ticketId", "==", ticketId));
+    const snap = await getDocs(q);
+
+    if (snap.empty) {
+        resultDiv.innerHTML = "<p style='color:var(--hard-red);'>❌ Ticket no encontrado.</p>";
+        return;
+    }
+
+    const docId = snap.docs[0].id;
+    const v = snap.docs[0].data();
+
+    // Renderizamos la información del ticket para que elijas qué devolver
+    resultDiv.innerHTML = `
+        <div class="scanner-box-v2" style="background: var(--bg-dark-panel); padding: 15px; border: 1px solid var(--border-color);">
+            <h3 style="margin-bottom:10px;">Cliente: ${v.cliente}</h3>
+            <p style="font-size:0.8rem; color:#aaa; margin-bottom:15px;">Fecha: ${v.fecha?.toDate().toLocaleString()}</p>
+            
+            <table class="pos-table-v2">
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Cant.</th>
+                        <th>Precio</th>
+                        <th>Acción</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${v.items.map(item => `
+                        <tr>
+                            <td>${item.nombre}</td>
+                            <td>${item.qty}</td>
+                            <td>$${item.precio.toLocaleString()}</td>
+                            <td>
+                                <button onclick="ejecutarDevolucion('${docId}', '${item.id}', ${item.qty}, '${item.nombre}', ${item.precio}, '${ticketId}')" 
+                                        class="btn-ver-ticket" style="background:var(--hard-red); color:white; border:none; padding:5px 10px; border-radius:4px;">
+                                    Devolver
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            </table>
+        </div>`;
+};
+
+// Función que restaura el stock y registra la salida de dinero
+window.ejecutarDevolucion = async (ventaId, prodId, cant, nombre, precio, tId) => {
+    const confirmacion = confirm(`¿Estás seguro de devolver ${cant} unidad/es de "${nombre}"? \nSe reintegrará el stock y se descontará de caja.`);
+    if (!confirmacion) return;
+
+    try {
+        // 1. Restaurar Stock en Firebase
+        const prodRef = doc(db, "productos", prodId);
+        const pDoc = await getDoc(prodRef);
+        
+        if (pDoc.exists() && pDoc.data().stock !== "∞") {
+            const stockActual = parseInt(pDoc.data().stock) || 0;
+            await updateDoc(prodRef, { stock: (stockActual + cant).toString() });
+        }
+
+        // 2. Registrar la salida de dinero en 'gastos' para que reste del Resumen de Caja
+        await addDoc(collection(db, "gastos"), {
+            motivo: `DEVOLUCIÓN: ${nombre} (Ticket: ${tId})`,
+            monto: precio * cant,
+            metodo: "Efectivo", // Se asume devolución en efectivo, podés cambiarlo si es necesario
+            fecha: serverTimestamp()
+        });
+
+        alert("✅ Devolución procesada: Stock reintegrado y caja actualizada.");
+        document.getElementById('dev-resultado-busqueda').innerHTML = "";
+        document.getElementById('dev-ticket-id').value = "";
+        
+        // Actualizamos historial para que el resumen neto cambie
+        loadHistorial(); 
+        
+    } catch (e) {
+        alert("❌ Error al procesar devolución: " + e.message);
+    }
+};
 iniciarReloj();
