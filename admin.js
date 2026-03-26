@@ -258,4 +258,3 @@ window.actualizarPreciosMasivo = async (accion) => {
         console.error(error);
     }
 };
-
