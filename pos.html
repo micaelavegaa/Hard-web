@@ -183,22 +183,25 @@
                 <h2>Historial de Gastos del Día</h2>
             </div>
             
-            <div class="table-container-v2">
-                <table class="pos-table-v2">
-                    <thead>
-                        <tr>
-                            <th>Hora</th>
-                            <th>Motivo</th>
-                            <th>Método</th>
-                            <th>Monto</th>
-                            <th>Acción</th>
-                        </tr>
-                    </thead>
-                    <tbody id="gastos-body">
-                    </tbody>
-                </table>
-            </div>
+            <div id="gastos-contenedor-estetico"></div>
         </div>
+        <section id="section-devoluciones" class="pos-section" style="display:none; padding: 20px;">
+            <div class="scanner-box-v2">
+                <div class="section-header-v2">
+                    <span class="icon">🔄</span>
+                    <h2>Gestión de Devoluciones</h2>
+                </div>
+                
+                <div style="display: flex; gap: 10px; padding: 15px; background: var(--bg-dark-panel); border-radius: 8px; border: 1px solid var(--border-color);">
+                    <input type="text" id="dev-ticket-id" 
+                        placeholder="Escaneá el código del ticket o escribí el ID..." 
+                        style="flex: 1; background: #1a1a1a; color: white; border: 1px solid #333; padding: 12px; border-radius: 6px; outline: none;">
+                    
+                </div>
+            </div>
+
+            <div id="dev-resultado-busqueda" style="margin-top: 25px;"></div>
+        </section>
     </main>
 
     <div id="modal-ticket" class="modal-overlay-v2 no-print" style="display:none;">
@@ -234,40 +237,10 @@
         <span id="pos-clock-date"></span>
         <span id="pos-clock-time"></span>
     </div>
-
-    <div id="section-devoluciones" class="pos-section" style="display:none; padding: 20px;">
-    <div class="scanner-box-v2">
-        <div class="section-header-v2">
-            <span class="icon">🔄</span>
-            <h2>Gestión de Devoluciones</h2>
-        </div>
-        
-        <div style="display: flex; gap: 10px; padding: 15px; background: var(--bg-dark-panel); border-radius: 8px; border: 1px solid var(--border-color);">
-            <input type="text" id="dev-ticket-id" 
-                   placeholder="Ingresá o escaneá el ID del Ticket (Ej: HARD-123456)" 
-                   style="flex: 1; background: #1a1a1a; color: white; border: 1px solid #333; padding: 12px; border-radius: 6px;">
-            
-            <button onclick="buscarTicketParaDevolucion()" 
-                    class="btn-finish-sale" 
-                    style="width: auto; padding: 0 25px; margin: 0; background: var(--hard-red);">
-                🔍 Buscar Ticket
-            </button>
-        </div>
-    </div>
-
-    <div id="dev-resultado-busqueda" style="margin-top: 25px;"></div>
-    </section> 
-    <div class="pos-clock-container">
-        <div id="pos-clock-date"></div>
-        <div id="pos-clock-time"></div>
-    </div>
-
+    <script src="https://cdn.jsdelivr.net/npm/jsbarcode@3.11.5/dist/JsBarcode.all.min.js"></script>
     <script type="module" src="pos.js"></script>
 </body>
 </html>
-</div>
-    <script type="module" src="pos.js"></script>
-</body>
 
-</html>
+
 
