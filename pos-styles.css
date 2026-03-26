@@ -15,7 +15,7 @@
     --text-main: #e0e0e0;       /* Texto principal gris claro */
     --text-muted: #888888;      /* Texto secundario/apagado */
     --border-color: #333333;    /* Color de bordes sutiles */
-    --scanner-green: #00FF41;   /* Verde fluorescente para el lector */
+    --scanner-green: #ffffff;   /* Verde fluorescente para el lector */
 }
 
 /* --- ESTILOS BASE --- */
@@ -357,17 +357,17 @@ body.pos-body {
 }
 
 /* =========================================================
-   RESUMEN DE VENTA (LADO DERECHO - PANEL FIJO)
+   RESUMEN DE VENTA (LADO DERECHO - COMPACTO PARA HARD)
    ========================================================= */
 .venta-summary-panel {
-    position: sticky; /* Se queda fijo al hacer scroll en contenido largo */
-    top: 0;
+    position: sticky;
+    top: 60px; /* Ajustado para que no choque con el nuevo menú flotante */
 }
 
 .summary-card-v2 {
     background-color: var(--bg-dark-panel);
-    padding: 30px;
-    border-radius: 15px;
+    padding: 15px; /* Reducido de 30px a 15px para ganar espacio */
+    border-radius: 12px;
     border: 1px solid var(--border-color);
     box-shadow: 0 8px 25px rgba(0,0,0,0.4);
 }
@@ -375,42 +375,41 @@ body.pos-body {
 .summary-title {
     margin-top: 0;
     color: white;
-    font-size: 1.5rem;
+    font-size: 1.1rem; /* Más pequeño para que no robe tanto aire */
     font-weight: 700;
-    margin-bottom: 25px;
+    margin-bottom: 15px;
 }
 
-/* Divisores sutiles */
+/* Divisores más sutiles y con menos margen */
 .summary-divider {
     border: 0;
-    border-top: 2px solid var(--border-color);
-    margin: 25px 0;
+    border-top: 1px solid var(--border-color);
+    margin: 15px 0;
 }
 
-/* ZONA DE TOTALES GRANDE */
+/* ZONA DE TOTALES MÁS COMPACTA */
 .total-big-v2 {
     background-color: var(--bg-dark-input);
-    padding: 30px 15px;
-    border-radius: 12px;
+    padding: 15px 10px; /* Reducido a la mitad */
+    border-radius: 10px;
     text-align: center;
-    margin: 25px 0;
+    margin: 15px 0;
     border: 2px solid var(--hard-red);
-    box-shadow: inset 0 0 15px rgba(217, 37, 37, 0.1);
 }
 
 .total-label {
     display: block;
     color: var(--text-muted);
-    font-size: 0.8rem;
+    font-size: 0.75rem;
     font-weight: 700;
-    margin-bottom: 10px;
+    margin-bottom: 5px;
     letter-spacing: 1px;
 }
 
 .total-amount {
-    font-size: 3rem; /* Total MUY grande */
+    font-size: 2.2rem; /* Reducido de 3rem a 2.2rem para que no ocupe tanto alto */
     font-weight: 800;
-    color: var(--hard-red);
+    color: var(--scanner-green); /* Verde éxito igual que en el buscador */
     letter-spacing: -1px;
 }
 
@@ -419,91 +418,61 @@ body.pos-body {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     color: var(--text-main);
-    font-size: 1rem;
+    font-size: 0.9rem;
 }
 
-.summary-totals .subtotal-row .amount {
-    font-weight: 600;
-}
-
-/* Input de descuento específico */
-.discount-group input {
-    color: var(--hard-red);
-    font-weight: 700;
-}
-
-/* GRUPOS DE FORMULARIO DEL POS */
+/* Input de descuento y cliente más cortos */
 .form-group-v2 {
-    margin-bottom: 20px;
+    margin-bottom: 12px; /* Reducido de 20px a 12px */
 }
 
 .form-group-v2 label {
     display: block;
     color: var(--text-muted);
-    margin-bottom: 8px;
-    font-size: 0.9rem;
-    font-weight: 600;
-}
-
-.form-group-v2 label .optional {
-    color: #555;
-    font-weight: 400;
+    margin-bottom: 5px;
     font-size: 0.8rem;
+    font-weight: 600;
 }
 
 .form-group-v2 input, .form-group-v2 select {
     width: 100%;
-    padding: 12px;
+    padding: 8px 10px; /* Menos alto */
     background-color: var(--bg-dark-input);
     border: 1px solid var(--border-color);
     color: white;
     border-radius: 6px;
-    font-size: 1rem;
-    transition: border-color 0.3s;
+    font-size: 0.9rem;
 }
 
-.form-group-v2 input:focus, .form-group-v2 select:focus {
-    border-color: var(--hard-red);
-    outline: none;
-}
-
-/* BOTÓN FINALIZAR GRANDE */
+/* BOTÓN FINALIZAR (Ajustado para que siempre sea visible) */
 .btn-finalize-v2 {
     width: 100%;
     background-color: var(--hard-red);
     color: white;
     border: none;
-    border-radius: 10px;
-    padding: 22px; /* Muy alto */
-    font-size: 1.3rem;
+    border-radius: 8px;
+    padding: 15px; /* Reducido de 22px a 15px */
+    font-size: 1.1rem;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    box-shadow: 0 6px 20px rgba(217, 37, 37, 0.4);
+    gap: 10px;
     text-transform: uppercase;
-    letter-spacing: 1px;
 }
 
 .btn-finalize-v2:hover {
     background-color: var(--hard-red-hover);
-    transform: translateY(-3px);
-    box-shadow: 0 8px 25px rgba(217, 37, 37, 0.5);
-}
-
-.btn-finalize-v2:active {
-    transform: translateY(1px);
+    transform: translateY(-2px);
 }
 
 .btn-finalize-v2 .icon {
-    font-size: 1.6rem;
+    font-size: 1.3rem;
 }
-
 /* =========================================================
    ESTILOS PARA PENDIENTES Y HISTORIAL
    ========================================================= */
@@ -831,4 +800,147 @@ body.pos-body {
 
 .gasto-row:hover {
     background: rgba(255, 255, 255, 0.05);
+}
+
+/* EL RELOJ: Anclado abajo a la derecha, igual a la imagen */
+.pos-clock-container {
+    position: fixed;
+    bottom: 10px;
+    right: 20px;
+    text-align: right;
+    z-index: 1000;
+    pointer-events: none; /* Para que no tape los botones del historial */
+}
+
+#pos-clock-date {
+    color: #666;
+    text-transform: uppercase;
+    font-size: 0.8rem;
+    font-weight: bold;
+    display: block;
+}
+
+#pos-clock-time {
+    color: #D92525; /* Rojo HARD */
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+/* Soporte para scroll en el main */
+.pos-main-content {
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+    padding-bottom: 80px;
+}
+
+/* Reloj con fondo sólido (Imagen de referencia) */
+.pos-clock-container {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background: #0a0a0a44; /* Fondo negro sólido */
+    padding: 5px 15px;
+    z-index: 1000;
+    width: 100%;
+}
+
+#pos-clock-date {
+    color: #888;
+    font-size: 12px;
+    text-transform: uppercase;
+    display: block;
+}
+
+#pos-clock-time {
+    color: #D92525;
+    font-size: 22px;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+/* Soporte para scroll en el contenido principal */
+.pos-main-content {
+    max-height: calc(100vh - 160px);
+    overflow-y: auto;
+    padding-bottom: 100px;
+}
+
+/* Estilo para productos devueltos en tablas */
+.item-devuelto {
+    color: #ff4444 !important;
+    text-decoration: line-through !important;
+    background: rgba(255, 0, 0, 0.05);
+}
+.pos-clock-container {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    background: #0a0a0a !important; /* Fondo negro sólido */
+    padding: 10px 25px;
+    border-top-left-radius: none;
+    z-index: 9999; /* Por encima de todo */
+    text-align: right;
+}
+
+#pos-clock-date {
+    color: #888;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    display: block;
+    font-weight: 600;
+}
+
+#pos-clock-time {
+    color: #D92525;
+    font-size: 1.8rem;
+    font-weight: 800;
+    line-height: 1.1;
+}
+
+/* 1. CONFIGURACIÓN DEL HEADER FLOTANTE (ESTILO ORIGINAL) */
+.pos-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10000; /* Siempre por encima */
+    background-color: var(--bg-dark-panel);
+    border-bottom: 2px solid var(--hard-red);
+    
+    /* Efecto de ocultamiento: lo movemos un 85% hacia arriba */
+    transform: translateY(-85%); 
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Movimiento suave y elástico */
+    box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+}
+
+/* 2. CUANDO EL MOUSE SE ACERCA, SE MUESTRA */
+.pos-header:hover, 
+.pos-header.active-manual {
+    transform: translateY(0);
+}
+
+/* 3. PESTAÑA INDICADORA ARREGLADA (Más arriba para no tapar) */
+/* Antes estaba en bottom: -25px, lo subimos a bottom: -15px */
+.pos-header::after {
+    content: "▼ MENÚ";
+    position: absolute;
+    bottom: -15px; /* <--- CAMBIO CLAVE: Sube la pestaña */
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--hard-red);
+    color: white;
+    padding: 2px 15px;
+    font-size: 0.7rem;
+    font-weight: bold;
+    border-radius: 0 0 8px 8px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+}
+
+/* 4. AJUSTE DEL CONTENIDO PRINCIPAL */
+/* Como el header es fixed, el contenido debe empezar con un margen superior */
+.pos-main-content {
+    margin-top: 50px; /* <--- CAMBIO CLAVE: Espacio para que no tape nada al inicio */
+    padding-top: 20px;
 }
