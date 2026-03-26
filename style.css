@@ -472,3 +472,13 @@ body.admin-body { background-color: var(--bg-light); color: var(--text-dark); }
     text-decoration: underline;
 }
 
+#toast-notification {
+    /* ... tus estilos actuales ... */
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+#toast-notification:hover {
+    background: #252525; /* Un gris un poco más claro que el fondo original */
+    transform: scale(1.02); /* Crece apenas un poquito */
+    border-color: var(--hard-red); /* Resalta el borde rojo HARD */
+}
