@@ -138,12 +138,13 @@ function renderSidebar() {
     if (totalEl) totalEl.innerText = `$ ${total.toLocaleString('es-AR')}`;
 }
 
-// --- 5. NOTIFICACIÓN TOAST ---
+// --- 5. NOTIFICACIÓN TOAST (CORREGIDA PARA ABRIR EL CARRITO) ---
 function showToast(name, price, img) {
     const toast = document.getElementById('toast-notification');
     const body = document.getElementById('toast-body');
     if (!toast || !body) return;
 
+    // Inyectamos el contenido
     body.innerHTML = `
         <img src="${img}" class="toast-img">
         <div class="toast-info">
@@ -152,8 +153,18 @@ function showToast(name, price, img) {
             <span class="toast-success">✓ Agregado al carrito</span>
         </div>
     `;
+
+    // CAMBIO CLAVE: Cambiamos showSection por toggleCartModal
+    toast.style.cursor = 'pointer';
+    toast.onclick = () => {
+        window.toggleCartModal(); // Abre el sidebar del carrito
+        window.hideToast();       // Oculta la notificación
+    };
+
     toast.style.display = 'block';
-    setTimeout(hideToast, 3500); 
+    
+    // Temporizador para que desaparezca solo
+    setTimeout(window.hideToast, 3500); 
 }
 
 window.hideToast = () => {
@@ -197,4 +208,3 @@ window.toggleContactModal = () => {
 
 // Carga inicial
 loadProducts();
-
