@@ -1,6 +1,7 @@
 {
   "name": "hard-web",
   "version": "1.0.0",
+  "description": "",
   "main": "admin.js",
   "scripts": {
     "test": "jest"
@@ -16,7 +17,6 @@
     "url": "https://github.com/micaelavegaa/Hard-web/issues"
   },
   "homepage": "https://github.com/micaelavegaa/Hard-web#readme",
-  "description": "",
   "devDependencies": {
     "jest": "^30.4.2"
   }
